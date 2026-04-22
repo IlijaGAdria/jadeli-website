@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
+  const headers = new Headers();
+
+  if (process.env.API_KEY) {
+    headers.set("Authorization", `Bearer ${process.env.API_KEY}`);
+  }
+
   const res = await fetch(`${process.env.API_URL}/products`, {
-    headers: {
-      Authorization: `Bearer ${process.env.API_KEY}`,
-    },
+    headers,
   });
 
   if (!res.ok) {

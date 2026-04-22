@@ -1,30 +1,27 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import styles from './PhoneCaseCard.module.css';
 import { useCart } from './CartContext';
 
-const SIZES = [
-  'iPhone 17 Pro Max',
-  'iPhone 17 Pro',
-  'iPhone 17',
-  'iPhone 16 Pro Max',
-  'iPhone 16 Pro',
-  'iPhone 16',
-  'Galaxy S26 Ultra',
-  'Galaxy S26',
-  'Galaxy S25 Ultra',
-  'Galaxy S25',
-];
-
 interface PhoneCaseCardProps {
+  slug: string;
   name: string;
   price: string;
   label?: string;
   imageSrc?: string;
+  sizes?: string[];
 }
 
-export function PhoneCaseCard({ name, price, label, imageSrc = '/Example 01.jpeg' }: PhoneCaseCardProps) {
+export function PhoneCaseCard({
+  slug,
+  name,
+  price,
+  label,
+  imageSrc = '/Example 01.jpeg',
+  sizes = [],
+}: PhoneCaseCardProps) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [showSizes, setShowSizes] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -65,7 +62,7 @@ export function PhoneCaseCard({ name, price, label, imageSrc = '/Example 01.jpeg
         <div className={styles.actionsWrap}>
           {showSizes && (
             <div className={styles.sizePicker}>
-              {SIZES.map((size) => (
+              {sizes.map((size) => (
                 <button
                   key={size}
                   className={`${styles.sizePill} ${selectedSize === size ? styles.sizePillActive : ''}`}
@@ -79,9 +76,14 @@ export function PhoneCaseCard({ name, price, label, imageSrc = '/Example 01.jpeg
 
           <div className={styles.actions}>
             {!selectedSize && !showSizes && (
-              <button className={styles.btnPrimary} onClick={handleChooseSize}>
-                Choose Size
-              </button>
+              <>
+                <button className={styles.btnPrimary} onClick={handleChooseSize}>
+                  Choose Size
+                </button>
+                <Link href={`/products/${slug}`} className={styles.btnSecondary}>
+                  View Details
+                </Link>
+              </>
             )}
 
             {showSizes && (

@@ -37,6 +37,15 @@
   justify-content: flex-end;
 }
 
+.cartButton {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
 @media (max-width: 860px) {
   .header {
     grid-template-columns: 1fr;

@@ -5,9 +5,10 @@ import { useCart } from './CartContext';
 
 export function CartDrawer() {
   const { items, isOpen, closeCart, removeItem } = useCart();
+  const parsePrice = (price: string) => Number.parseFloat(price.replace(/[^0-9.]/g, '')) || 0;
 
   const total = items.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace('$', ''));
+    const price = parsePrice(item.price);
     return sum + price * item.quantity;
   }, 0);
 
@@ -63,7 +64,7 @@ export function CartDrawer() {
             <div className={styles.footer}>
               <div className={styles.total}>
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>€{total.toFixed(2)}</span>
               </div>
               <a href="/checkout" className={styles.checkoutBtn}>Checkout</a>
             </div>

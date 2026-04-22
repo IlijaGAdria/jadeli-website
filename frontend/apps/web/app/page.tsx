@@ -4,9 +4,12 @@ import { AnnouncementBar } from '../components/AnnouncementBar';
 import { SiteHeader } from '../components/SiteHeader';
 import { HeroCard } from '../components/HeroCard';
 import { ProductTile } from '../components/ProductTile';
-import { drops } from '../lib/mock-data';
+import { getProducts, toProductCard } from '../lib/api';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const products = await getProducts();
+  const drops = products.map(toProductCard);
+
   return (
     <main className={styles.page}>
       <AnnouncementBar />
@@ -24,7 +27,7 @@ export default function HomePage() {
           </p>
           <p className={styles.limitedDrop}>Limited drop.</p>
           <div className={styles.actions}>
-            <Button href="#new-drops">BUY NOW</Button>
+            <Button href="/products/butter-kiss-case">BUY NOW</Button>
           </div>
         </div>
 
@@ -53,12 +56,12 @@ export default function HomePage() {
             <span className={styles.eyebrow}>New drops</span>
             <h2>Fresh styles for your newest lineup</h2>
           </div>
-          <a href="#" className={styles.inlineLink}>View all</a>
+          <a href="/shop-all" className={styles.inlineLink}>View all</a>
         </div>
 
         <div className={styles.grid}>
           {drops.map((item) => (
-            <ProductTile key={item.name} {...item} />
+            <ProductTile key={item.slug ?? item.name} {...item} />
           ))}
         </div>
       </section>

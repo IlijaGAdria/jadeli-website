@@ -1,0 +1,153 @@
+.page {
+  min-height: 100vh;
+  padding: 0 20px 72px;
+}
+
+.hero,
+.section {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.hero {
+  padding: 18px 0 28px;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.copy,
+.storyCard,
+.storyBlock,
+.quote,
+.shippingCard {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+}
+
+.copy {
+  padding: 40px;
+}
+
+.backLink,
+.kicker,
+.eyebrow,
+.storyEyebrow,
+.metaLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.76rem;
+}
+
+.backLink {
+  display: inline-block;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: 18px;
+}
+
+.copy h1 {
+  margin: 0 0 14px;
+  font-size: clamp(2.3rem, 5vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  max-width: 12ch;
+}
+
+.tagline {
+  margin: 0 0 16px;
+  font-size: 1.18rem;
+  color: #1f1722;
+}
+
+.description {
+  margin: 0 0 24px;
+  max-width: 56ch;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.metaStrip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.metaStrip strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.02rem;
+}
+
+.storyCard,
+.storyBlock,
+.shippingCard {
+  padding: 24px;
+}
+
+.storyCard p,
+.storyBlock p,
+.shippingCard p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.section {
+  padding-top: 54px;
+}
+
+.sectionHeading {
+  margin-bottom: 22px;
+}
+
+.sectionHeading h2 {
+  margin: 10px 0 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.storyGrid,
+.shippingGrid,
+.testimonialGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.quote {
+  margin: 0;
+  padding: 26px;
+  font-size: 1.08rem;
+  line-height: 1.75;
+  color: #1f1722;
+}
+
+@media (max-width: 1080px) {
+  .hero,
+  .storyGrid,
+  .shippingGrid,
+  .testimonialGrid,
+  .metaStrip {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 0 14px 52px;
+  }
+
+  .copy,
+  .storyCard,
+  .storyBlock,
+  .quote,
+  .shippingCard {
+    padding: 22px;
+  }
+}
