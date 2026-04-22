@@ -10,7 +10,7 @@ export function SiteHeader() {
       <nav className={styles.nav}>
         <a href="#new-drops">New</a>
         <a href="#devices">Shop by device</a>
-        <a href="#">Shop all</a>
+        <a href="/shop-all">Shop all</a>
         <a href="/about">About</a>
       </nav>
 
