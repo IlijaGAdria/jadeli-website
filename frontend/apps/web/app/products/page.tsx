@@ -19,7 +19,7 @@ const PLACEHOLDER_PRODUCTS = [
 ];
 
 export const metadata = {
-  title: 'Shop All — JADELI',
+  title: 'Products — JADELI',
   description: 'Browse the full JADELI collection.',
 };
 
@@ -31,7 +31,7 @@ export default function ShopAllPage() {
 
       <main className={styles.main}>
         <div className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Shop All</h1>
+          <h1 className={styles.pageTitle}>Products</h1>
           <p className={styles.pageSubtitle}>{PLACEHOLDER_PRODUCTS.length} styles</p>
         </div>
 

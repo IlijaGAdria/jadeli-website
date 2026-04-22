@@ -58,7 +58,7 @@ export function CheckoutClient({ countries }: Props) {
             <p className={styles.successSub}>
               Thank you, {firstName}. We&apos;ll send a confirmation to <strong>{email}</strong>.
             </p>
-            <a href="/shop-all" className={styles.successBtn}>Continue Shopping</a>
+            <a href="/products" className={styles.successBtn}>Continue Shopping</a>
           </div>
         </div>
       </>
@@ -77,7 +77,7 @@ export function CheckoutClient({ countries }: Props) {
           </a>
 
           <nav className={styles.breadcrumb} aria-label="Checkout steps">
-            <a href="/shop-all">Cart</a>
+            <a href="/products">Cart</a>
             <span className={styles.breadSep}>›</span>
             <span className={styles.breadActive}>Information</span>
             <span className={styles.breadSep}>›</span>
@@ -202,7 +202,7 @@ export function CheckoutClient({ countries }: Props) {
           </section>
 
           <div className={styles.formFooter}>
-            <a href="/shop-all" className={styles.backLink}>← Return to cart</a>
+            <a href="/products" className={styles.backLink}>← Return to cart</a>
             <button type="submit" className={styles.submitBtn}>
               Continue to shipping
             </button>

@@ -1,9 +1,20 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 
+import { env } from "./config/env.js";
 import { healthRoutes } from "./routes/health.js";
 import { productRoutes } from "./routes/products.js";
 
 export const app = new Hono();
+
+app.use(
+  "*",
+  cors({
+    origin: env.FRONTEND_ORIGIN,
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 
 app.get("/", (c) =>
   c.json({
