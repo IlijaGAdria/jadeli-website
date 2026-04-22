@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npx -y node@22 node_modules/directus/cli.js start",
-    "start": "npx -y node@22 node_modules/directus/cli.js start",
-    "bootstrap": "npx -y node@22 node_modules/directus/cli.js bootstrap"
+    "dev": "npx -y node@22 ../../../node_modules/directus/cli.js start",
+    "start": "npx -y node@22 ../../../node_modules/directus/cli.js start",
+    "bootstrap": "npx -y node@22 ../../../node_modules/directus/cli.js bootstrap"
   },
   "dependencies": {
     "directus": "^11.5.1",

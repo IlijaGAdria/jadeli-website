@@ -39,7 +39,7 @@ productRoutes.get("/products/:slug", async (c) => {
     return c.json({ message: "Product not found." }, 404);
   }
 
-  const content = await getProductContentBySlug(slug);
+  const content = await getProductContentBySlug(slug).catch(() => null);
 
   const data: ProductDetailDto = {
     ...toProductDto(product),
