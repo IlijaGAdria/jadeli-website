@@ -3,16 +3,14 @@
 import { useState } from 'react';
 import styles from './page.module.css';
 import { AnnouncementBar } from '../../components/AnnouncementBar';
-
-const MOCK_ITEMS = [
-  { id: '1', name: 'JDÉ Croc Case', price: '$38', size: 'iPhone 16 Pro Max', imageSrc: '/Example 01.jpeg', quantity: 1 },
-];
+import { useCart } from '../../components/CartContext';
 
 interface Props {
   countries: string[];
 }
 
 export function CheckoutClient({ countries }: Props) {
+  const { items } = useCart();
   const [email, setEmail] = useState('');
   const [emailOffers, setEmailOffers] = useState(true);
   const [firstName, setFirstName] = useState('');
@@ -28,9 +26,10 @@ export function CheckoutClient({ countries }: Props) {
   const [discountApplied, setDiscountApplied] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitted, setSubmitted] = useState(false);
+  const parsePrice = (price: string) => Number.parseFloat(price.replace(/[^0-9.]/g, '')) || 0;
 
-  const subtotal = MOCK_ITEMS.reduce((s, i) => s + parseFloat(i.price.replace('$', '')) * i.quantity, 0);
-  const totalCount = MOCK_ITEMS.reduce((s, i) => s + i.quantity, 0);
+  const subtotal = items.reduce((s, i) => s + parsePrice(i.price) * i.quantity, 0);
+  const totalCount = items.reduce((s, i) => s + i.quantity, 0);
 
   function touch(field: string) {
     setTouched(prev => ({ ...prev, [field]: true }));
@@ -213,7 +212,14 @@ export function CheckoutClient({ countries }: Props) {
         <aside className={styles.summary}>
           <div className={styles.summaryInner}>
             <div className={styles.summaryItems}>
-              {MOCK_ITEMS.map(item => (
+              {items.length === 0 ? (
+                <div className={styles.summaryItem}>
+                  <div className={styles.summaryItemInfo}>
+                    <p className={styles.summaryItemName}>Your cart is empty.</p>
+                    <p className={styles.summaryItemSize}>Add a product before testing checkout.</p>
+                  </div>
+                </div>
+              ) : items.map(item => (
                 <div key={item.id} className={styles.summaryItem}>
                   <div className={styles.summaryImageWrap}>
                     <img src={item.imageSrc} alt={item.name} className={styles.summaryImage} />
@@ -250,7 +256,7 @@ export function CheckoutClient({ countries }: Props) {
             <div className={styles.totalsBlock}>
               <div className={styles.totalRow}>
                 <span>Subtotal · {totalCount} {totalCount === 1 ? 'item' : 'items'}</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>€{subtotal.toFixed(2)}</span>
               </div>
               <div className={styles.totalRow}>
                 <span>Shipping</span>
