@@ -1,3 +1,5 @@
+import type { ProductCardDto } from "@case-couture/types";
+
 export const promoCards = [
   {
     tag: 'Editorial',
@@ -16,7 +18,7 @@ export const promoCards = [
   },
 ];
 
-export const drops = [
+export const drops: ProductCardDto[] = [
   {
     name: 'Butter Kiss iPhone Case',
     subtitle: 'Gloss finish for iPhone 17 and iPhone 16 family',

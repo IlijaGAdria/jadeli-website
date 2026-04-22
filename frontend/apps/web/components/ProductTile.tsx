@@ -1,13 +1,8 @@
+import type { ProductCardDto } from "@case-couture/types";
+
 import styles from './ProductTile.module.css';
 
-type ProductTileProps = {
-  name: string;
-  subtitle: string;
-  price: string;
-  label: string;
-};
-
-export function ProductTile({ name, subtitle, price, label }: ProductTileProps) {
+export function ProductTile({ name, subtitle, price, label }: ProductCardDto) {
   return (
     <article className={styles.tile}>
       <div className={styles.media}>
