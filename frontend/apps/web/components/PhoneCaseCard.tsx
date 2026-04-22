@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import styles from './PhoneCaseCard.module.css';
+import { useCart } from './CartContext';
 
 const SIZES = [
   'iPhone 17 Pro Max',
@@ -27,6 +28,7 @@ export function PhoneCaseCard({ name, price, label, imageSrc = '/Example 01.jpeg
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [showSizes, setShowSizes] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  const cart = useCart();
 
   function handleChooseSize() {
     setShowSizes(true);
@@ -39,7 +41,8 @@ export function PhoneCaseCard({ name, price, label, imageSrc = '/Example 01.jpeg
   }
 
   function handleAddToCart() {
-    // Will connect to backend later
+    if (!selectedSize) return;
+    cart.addItem({ name, price, size: selectedSize, imageSrc });
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   }
@@ -59,43 +62,45 @@ export function PhoneCaseCard({ name, price, label, imageSrc = '/Example 01.jpeg
           <p className={styles.sizeSelected}>{selectedSize}</p>
         )}
 
-        {showSizes && (
-          <div className={styles.sizePicker}>
-            {SIZES.map((size) => (
-              <button
-                key={size}
-                className={`${styles.sizePill} ${selectedSize === size ? styles.sizePillActive : ''}`}
-                onClick={() => handleSizeSelect(size)}
-              >
-                {size}
-              </button>
-            ))}
-          </div>
-        )}
-
-        <div className={styles.actions}>
-          {!selectedSize && !showSizes && (
-            <button className={styles.btnPrimary} onClick={handleChooseSize}>
-              Choose Size
-            </button>
-          )}
-
+        <div className={styles.actionsWrap}>
           {showSizes && (
-            <button className={styles.btnSecondary} onClick={() => setShowSizes(false)}>
-              Cancel
-            </button>
+            <div className={styles.sizePicker}>
+              {SIZES.map((size) => (
+                <button
+                  key={size}
+                  className={`${styles.sizePill} ${selectedSize === size ? styles.sizePillActive : ''}`}
+                  onClick={() => handleSizeSelect(size)}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
           )}
 
-          {selectedSize && !showSizes && (
-            <>
-              <button className={styles.btnPrimary} onClick={handleAddToCart} disabled={addedToCart}>
-                {addedToCart ? 'Added!' : 'Add to Cart'}
+          <div className={styles.actions}>
+            {!selectedSize && !showSizes && (
+              <button className={styles.btnPrimary} onClick={handleChooseSize}>
+                Choose Size
               </button>
-              <button className={styles.btnSecondary} onClick={handleChooseSize}>
-                Change Size
+            )}
+
+            {showSizes && (
+              <button className={styles.btnSecondary} onClick={() => setShowSizes(false)}>
+                Cancel
               </button>
-            </>
-          )}
+            )}
+
+            {selectedSize && !showSizes && (
+              <>
+                <button className={styles.btnPrimary} onClick={handleAddToCart} disabled={addedToCart}>
+                  {addedToCart ? 'Added!' : 'Add to Cart'}
+                </button>
+                <button className={styles.btnSecondary} onClick={handleChooseSize}>
+                  Change Size
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </article>

@@ -1,7 +1,7 @@
 import styles from './page.module.css';
 import { AnnouncementBar } from '../../components/AnnouncementBar';
 import { SiteHeader } from '../../components/SiteHeader';
-import { PhoneCaseCard } from '../../components/PhoneCaseCard';
+import { ShopAllShell } from './ShopAllShell';
 
 const PLACEHOLDER_PRODUCTS = [
   { id: 1,  name: 'JDÉ Croc Case',         price: '$38', label: 'New' },
@@ -35,16 +35,7 @@ export default function ShopAllPage() {
           <p className={styles.pageSubtitle}>{PLACEHOLDER_PRODUCTS.length} styles</p>
         </div>
 
-        <div className={styles.grid}>
-          {PLACEHOLDER_PRODUCTS.map((product) => (
-            <PhoneCaseCard
-              key={product.id}
-              name={product.name}
-              price={product.price}
-              label={product.label}
-            />
-          ))}
-        </div>
+        <ShopAllShell products={PLACEHOLDER_PRODUCTS} />
       </main>
     </>
   );
