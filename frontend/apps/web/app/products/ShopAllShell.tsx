@@ -1,7 +1,6 @@
 'use client';
 
 import { PhoneCaseCard } from '../../components/PhoneCaseCard';
-import styles from './page.module.css';
 
 interface Product {
   id: string;
@@ -15,7 +14,7 @@ interface Product {
 
 export function ShopAllShell({ products }: { products: Product[] }) {
   return (
-    <div className={styles.grid}>
+    <div className="grid grid-cols-4 gap-6 items-start max-[1100px]:grid-cols-3 max-[720px]:grid-cols-2 max-[720px]:gap-3">
       {products.map((product) => (
         <PhoneCaseCard
           key={product.id}

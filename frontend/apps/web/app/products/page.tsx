@@ -1,4 +1,3 @@
-import styles from './page.module.css';
 import { AnnouncementBar } from '../../components/AnnouncementBar';
 import { SiteHeader } from '../../components/SiteHeader';
 import { ShopAllShell } from './ShopAllShell';
@@ -17,10 +16,10 @@ export default async function ShopAllPage() {
       <AnnouncementBar />
       <SiteHeader />
 
-      <main className={styles.main}>
-        <div className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Products</h1>
-          <p className={styles.pageSubtitle}>{products.length} styles</p>
+      <main className="max-w-[1220px] mx-auto px-6 pt-12 pb-24">
+        <div className="flex items-baseline gap-4 mb-10">
+          <h1 className="m-0 text-[clamp(1.6rem,3vw,2.4rem)] font-bold tracking-[-0.02em] text-[#1f1722]">Products</h1>
+          <p className="m-0 text-[0.9rem] text-muted">{products.length} styles</p>
         </div>
 
         <ShopAllShell products={products} />
@@ -28,3 +27,4 @@ export default async function ShopAllPage() {
     </>
   );
 }
+

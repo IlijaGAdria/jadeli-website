@@ -1,4 +1,3 @@
-import styles from './page.module.css';
 import { Button } from '@case-couture/ui';
 import { AnnouncementBar } from '../components/AnnouncementBar';
 import { SiteHeader } from '../components/SiteHeader';
@@ -6,32 +5,39 @@ import { HeroCard } from '../components/HeroCard';
 import { ProductTile } from '../components/ProductTile';
 import { getProducts, toProductCard } from '../lib/api';
 
+const maxW = 'max-w-[var(--max-width)] mx-auto';
+const videoArticle = 'bg-[rgba(255,255,255,0.86)] border border-[rgba(31,23,34,0.10)] rounded-[var(--radius-xl)] overflow-hidden shadow-[var(--shadow)]';
+
 export default async function HomePage() {
   const products = await getProducts();
   const drops = products.map(toProductCard);
 
   return (
-    <main className={styles.page}>
+    <main className="min-h-screen px-5 pb-[72px] max-[640px]:px-[14px] max-[640px]:pb-[52px]">
       <AnnouncementBar />
       <SiteHeader />
 
-      <section className={styles.hero}>
-        <div className={styles.heroCopy}>
-          <span className={styles.kicker}>JDÉ Croc Case</span>
-          <h1>A statement piece designed to elevate your everyday.</h1>
-          <p>
+      <section className={`${maxW} pt-3 pb-[26px] grid grid-cols-[1.05fr_1fr] gap-6 items-stretch max-[1080px]:grid-cols-1`}>
+        <div className="bg-[rgba(255,255,255,0.78)] border border-[rgba(31,23,34,0.10)] rounded-[var(--radius-xl)] p-12 shadow-[var(--shadow)] max-[640px]:p-[30px_24px]">
+          <span className="uppercase tracking-[0.14em] text-[0.76rem]">JDÉ Croc Case</span>
+          <h1 className="mt-[14px] mb-[18px] text-[clamp(2rem,5vw,3.4rem)] leading-[1.05] tracking-[-0.03em] max-w-[20ch]">
+            A statement piece designed to elevate your everyday.
+          </h1>
+          <p className="mb-6 max-w-[58ch] text-muted leading-[1.7] text-[1.02rem]">
             Crafted with a premium crocodile texture and finished with our signature gold logo and crystal detail.
           </p>
-          <p>
+          <p className="mb-6 max-w-[58ch] text-muted leading-[1.7] text-[1.02rem]">
             <strong>This is more than a phone case — it&apos;s a reflection of your style.</strong>
           </p>
-          <p className={styles.limitedDrop}>Limited drop.</p>
-          <div className={styles.actions}>
+          <p className="font-bold uppercase tracking-[0.14em] text-[0.85rem] text-[#1f1722] mb-[18px]">
+            Limited drop.
+          </p>
+          <div className="flex gap-3 flex-wrap">
             <Button href="/products/butter-kiss-case">BUY NOW</Button>
           </div>
         </div>
 
-        <div className={styles.heroCards}>
+        <div className="grid grid-cols-2 gap-[18px] max-[860px]:flex max-[860px]:flex-col">
           <HeroCard
             eyebrow="New capsule"
             title="JDE croc case"
@@ -48,87 +54,87 @@ export default async function HomePage() {
         </div>
       </section>
 
-
-
-      <section id="new-drops" className={styles.section}>
-        <div className={styles.sectionHeading}>
+      <section id="new-drops" className={`${maxW} pt-14`}>
+        <div className="flex justify-between items-end gap-[18px] mb-[22px] max-[640px]:items-start max-[640px]:flex-col">
           <div>
-            <span className={styles.eyebrow}>New drops</span>
-            <h2>Fresh styles for your newest lineup</h2>
+            <span className="uppercase tracking-[0.14em] text-[0.76rem] text-muted">New drops</span>
+            <h2 className="mt-[10px] mb-0 text-[clamp(2rem,5vw,3.2rem)] leading-[0.98] tracking-[-0.04em]">Fresh styles for your newest lineup</h2>
           </div>
-          <a href="/shop-all" className={styles.inlineLink}>View all</a>
+          <a href="/products" className="uppercase tracking-[0.14em] text-[0.76rem] text-muted">View all</a>
         </div>
-
-        <div className={styles.grid}>
+        <div className="grid grid-cols-4 gap-[18px] max-[1080px]:grid-cols-2 max-[640px]:grid-cols-1">
           {drops.map((item) => (
             <ProductTile key={item.slug ?? item.name} {...item} />
           ))}
         </div>
       </section>
 
-      <section id="videos" className={styles.section}>
-        <div className={styles.sectionHeading}>
+      <section id="videos" className={`${maxW} pt-14`}>
+        <div className="flex justify-between items-end gap-[18px] mb-[22px] max-[640px]:items-start max-[640px]:flex-col">
           <div>
-            <span className={styles.eyebrow}>Up close</span>
-            <h2>See it in action</h2>
+            <span className="uppercase tracking-[0.14em] text-[0.76rem] text-muted">Up close</span>
+            <h2 className="mt-[10px] mb-0 text-[clamp(2rem,5vw,3.2rem)] leading-[0.98] tracking-[-0.04em]">See it in action</h2>
           </div>
         </div>
 
-        <div className={styles.videoGrid}>
-          <article className={styles.videoCard}>
-            <div className={styles.videoWrap}>
+        <div className="grid grid-cols-3 gap-[18px] max-[1080px]:grid-cols-2 max-[640px]:grid-cols-1">
+          <article className={videoArticle}>
+            <div className="relative w-full aspect-[9/14] overflow-hidden bg-[#1f1722]">
               <iframe
                 src="https://www.youtube.com/embed/ZZbj-lVO8nw?autoplay=1&mute=1&loop=1&playlist=ZZbj-lVO8nw&controls=0&showinfo=0&modestbranding=1"
                 title="Close up maske"
                 allow="autoplay; encrypted-media"
                 allowFullScreen
+                className="w-full h-full object-cover block border-none"
               />
             </div>
-            <h3>Close up maske</h3>
-            <p>Premium crocodile texture and gold detailing up close.</p>
+            <h3 className="mx-5 mt-4 mb-[6px] text-[1.25rem] tracking-[-0.03em]">Close up maske</h3>
+            <p className="mx-5 mb-[18px] text-muted leading-[1.6] text-[0.95rem]">Premium crocodile texture and gold detailing up close.</p>
           </article>
 
-          <article className={styles.videoCard}>
-            <div className={styles.videoWrap}>
+          <article className={videoArticle}>
+            <div className="relative w-full aspect-[9/14] overflow-hidden bg-[#1f1722]">
               <iframe
                 src="https://www.youtube.com/embed/ZZbj-lVO8nw?autoplay=1&mute=1&loop=1&playlist=ZZbj-lVO8nw&controls=0&showinfo=0&modestbranding=1"
                 title="Wearing"
                 allow="autoplay; encrypted-media"
                 allowFullScreen
+                className="w-full h-full object-cover block border-none"
               />
             </div>
-            <h3>Wearing</h3>
-            <p>How it feels in your hand, everyday.</p>
+            <h3 className="mx-5 mt-4 mb-[6px] text-[1.25rem] tracking-[-0.03em]">Wearing</h3>
+            <p className="mx-5 mb-[18px] text-muted leading-[1.6] text-[0.95rem]">How it feels in your hand, everyday.</p>
           </article>
 
-          <article className={styles.videoCard}>
-            <div className={styles.videoWrap}>
+          <article className={videoArticle}>
+            <div className="relative w-full aspect-[9/14] overflow-hidden bg-[#1f1722]">
               <iframe
                 src="https://www.youtube.com/embed/ZZbj-lVO8nw?autoplay=1&mute=1&loop=1&playlist=ZZbj-lVO8nw&controls=0&showinfo=0&modestbranding=1"
                 title="Lifestyle"
                 allow="autoplay; encrypted-media"
                 allowFullScreen
+                className="w-full h-full object-cover block border-none"
               />
             </div>
-            <h3>Lifestyle</h3>
-            <p>Made to complement your look.</p>
+            <h3 className="mx-5 mt-4 mb-[6px] text-[1.25rem] tracking-[-0.03em]">Lifestyle</h3>
+            <p className="mx-5 mb-[18px] text-muted leading-[1.6] text-[0.95rem]">Made to complement your look.</p>
           </article>
         </div>
       </section>
 
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <div className={styles.footerCol}>
-            <h4>JADELI</h4>
-            <p>Luxury in the details.</p>
+      <footer className={`${maxW} mt-[72px] pt-12 border-t border-[rgba(31,23,34,0.10)]`}>
+        <div className="grid grid-cols-3 gap-6">
+          <div>
+            <h4 className="text-[0.78rem] uppercase tracking-[0.14em] mt-0 mb-[10px]">JADELI</h4>
+            <p className="m-0 text-muted text-[0.95rem] leading-[1.6]">Luxury in the details.</p>
           </div>
-          <div className={styles.footerCol}>
-            <h4>Contact</h4>
-            <p>info@jadeli.com</p>
+          <div>
+            <h4 className="text-[0.78rem] uppercase tracking-[0.14em] mt-0 mb-[10px]">Contact</h4>
+            <p className="m-0 text-muted text-[0.95rem] leading-[1.6]">info@jadeli.com</p>
           </div>
-          <div className={styles.footerCol}>
-            <h4>Follow us</h4>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className={styles.footerLink}>Instagram</a>
+          <div>
+            <h4 className="text-[0.78rem] uppercase tracking-[0.14em] mt-0 mb-[10px]">Follow us</h4>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted text-[0.95rem] no-underline">Instagram</a>
           </div>
         </div>
       </footer>

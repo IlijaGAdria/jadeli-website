@@ -2,22 +2,25 @@ import Link from 'next/link';
 
 import type { ProductCardDto } from "@case-couture/types";
 
-import styles from './ProductTile.module.css';
-
 export function ProductTile({ name, subtitle, price, label, slug }: ProductCardDto) {
   const href = slug ? `/products/${slug}` : '#';
 
   return (
-    <article className={styles.tile}>
-      <div className={styles.media}>
-        <span>{label}</span>
+    <article className="overflow-hidden rounded-[24px] border border-[rgba(31,23,34,0.12)] bg-[rgba(255,255,255,0.85)] [box-shadow:0_20px_50px_rgba(113,72,96,0.14)]">
+      <div
+        className="aspect-[4/5] p-4 flex items-start justify-start"
+        style={{ background: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.9), transparent 22%), radial-gradient(circle at 70% 70%, rgba(248,195,219,0.78), transparent 26%), linear-gradient(160deg, #f8cddd, #fff0f6)' }}
+      >
+        <span className="inline-flex px-3 py-2 rounded-full bg-[rgba(255,255,255,0.78)] border border-[rgba(31,23,34,0.08)] text-[0.74rem] uppercase tracking-[0.12em]">
+          {label}
+        </span>
       </div>
-      <div className={styles.body}>
-        <h3>{name}</h3>
-        <p>{subtitle}</p>
-        <div className={styles.meta}>
+      <div className="p-[18px]">
+        <h3 className="m-0 mb-2 text-[1.06rem]">{name}</h3>
+        <p className="m-0 text-muted leading-[1.55] min-h-[48px]">{subtitle}</p>
+        <div className="mt-4 flex items-center justify-between gap-3">
           <strong>{price}</strong>
-          <Link href={href}>View product</Link>
+          <Link href={href} className="text-muted text-[0.9rem] no-underline">View product</Link>
         </div>
       </div>
     </article>

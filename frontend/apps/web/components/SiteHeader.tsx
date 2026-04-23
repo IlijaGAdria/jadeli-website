@@ -1,31 +1,19 @@
-'use client';
-
-import Link from 'next/link';
-
-import { useCart } from './CartContext';
-import styles from './SiteHeader.module.css';
-
 export function SiteHeader() {
-  const { items, openCart } = useCart();
-  const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
-
   return (
-    <header className={styles.header}>
-      <Link className={styles.brand} href="/">
-        <img src="/jadeli-logo.png" alt="JADELI" className={styles.logo} />
-      </Link>
+    <header className="max-w-[1220px] mx-auto px-0 grid grid-cols-[1fr_auto_1fr] gap-[18px] items-center overflow-hidden">
+      <a className="flex items-center leading-none" href="/">
+        <img src="/jadeli-logo.png" alt="JADELI" className="h-20 w-auto" />
+      </a>
 
-      <nav className={styles.nav}>
-        <Link href="/#new-drops">New</Link>
-        <Link href="/#devices">Shop by device</Link>
-        <Link href="/products">Products</Link>
-        <Link href="/about">About</Link>
+      <nav className="flex gap-[18px] items-center text-muted text-[0.95rem] justify-center">
+        <a href="/#new-drops">New</a>
+        <a href="/#devices">Shop by device</a>
+        <a href="/products">Products</a>
+        <a href="/about">About</a>
       </nav>
 
-      <div className={styles.actions}>
-        <button type="button" className={styles.cartButton} onClick={openCart}>
-          Cart ({totalCount})
-        </button>
+      <div className="flex gap-[18px] items-center text-muted text-[0.95rem] justify-end">
+        <a href="#">Cart (0)</a>
       </div>
     </header>
   );

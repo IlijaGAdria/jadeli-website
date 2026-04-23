@@ -5,11 +5,13 @@ import { AnnouncementBar } from '../../../components/AnnouncementBar';
 import { ProductPurchasePanel } from '../../../components/ProductPurchasePanel';
 import { SiteHeader } from '../../../components/SiteHeader';
 import { getPrimaryVariant, getProduct } from '../../../lib/api';
-import styles from './page.module.css';
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+const card = "bg-[rgba(255,255,255,0.86)] border border-[rgba(31,23,34,0.12)] rounded-[32px] [box-shadow:0_20px_50px_rgba(113,72,96,0.14)] p-6";
+const eyebrow = "uppercase tracking-[0.14em] text-[0.76rem]";
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
@@ -24,105 +26,98 @@ export default async function ProductPage({ params }: Props) {
   const content = product.content;
 
   return (
-    <main className={styles.page}>
+    <main className="min-h-screen px-5 pb-[72px]">
       <AnnouncementBar />
       <SiteHeader />
 
-      <section className={styles.hero}>
-        <div className={styles.copy}>
-          <Link href="/products" className={styles.backLink}>
-            Back to products
+      {/* Hero grid */}
+      <section className="max-w-[1220px] mx-auto py-[18px] grid grid-cols-[1.15fr_0.85fr] gap-6 items-start max-[860px]:grid-cols-1">
+        <div className={card}>
+          <Link href="/products" className={`${eyebrow} inline-block text-muted mb-[18px]`}>
+            ← Back to products
           </Link>
-          <span className={styles.kicker}>JDÉ Product Story</span>
-          <h1>{content?.title ?? product.name}</h1>
-          {content?.tagline ? <p className={styles.tagline}>{content.tagline}</p> : null}
-          <p className={styles.description}>
+          <span className={`${eyebrow} text-[#1f1722] block mb-[18px]`}>JDÉ Product Story</span>
+          <h1 className="text-[clamp(2.3rem,5vw,4rem)] leading-[0.98] tracking-[-0.04em] max-w-[12ch] mb-[14px]">
+            {content?.title ?? product.name}
+          </h1>
+          {content?.tagline && <p className="text-[1.18rem] text-[#1f1722] mb-4">{content.tagline}</p>}
+          <p className="text-muted leading-[1.75] max-w-[56ch] mb-6">
             {content?.intro ?? product.description ?? 'A statement piece designed to elevate your everyday.'}
           </p>
 
-          <div className={styles.metaStrip}>
+          <div className="grid grid-cols-2 gap-[14px] mb-[22px]">
             <div>
-              <span className={styles.metaLabel}>Primary fit</span>
-              <strong>{primaryVariant?.deviceModel ?? 'Coming soon'}</strong>
+              <span className={`${eyebrow} text-muted`}>Primary fit</span>
+              <strong className="block mt-2 text-[1.02rem]">{primaryVariant?.deviceModel ?? 'Coming soon'}</strong>
             </div>
             <div>
-              <span className={styles.metaLabel}>Stock</span>
-              <strong>{availableQuantity > 0 ? `${availableQuantity} available` : 'Out of stock'}</strong>
+              <span className={`${eyebrow} text-muted`}>Stock</span>
+              <strong className="block mt-2 text-[1.02rem]">
+                {availableQuantity > 0 ? `${availableQuantity} available` : 'Out of stock'}
+              </strong>
             </div>
           </div>
 
           <ProductPurchasePanel product={product} />
         </div>
 
-        <div className={styles.storyCard}>
-          <span className={styles.storyEyebrow}>Why It&apos;s Special</span>
-          <p>{content?.whyItsSpecial ?? 'Add your hero storytelling copy in Directus to replace this placeholder.'}</p>
+        <div className={card}>
+          <span className={`${eyebrow} text-muted`}>Why It&apos;s Special</span>
+          <p className="mt-[10px] text-muted leading-[1.75]">
+            {content?.whyItsSpecial ?? 'Add your hero storytelling copy in Directus to replace this placeholder.'}
+          </p>
         </div>
       </section>
 
-      <section className={styles.section}>
-        <div className={styles.sectionHeading}>
-          <div>
-            <span className={styles.eyebrow}>In Focus</span>
-            <h2>CMS story blocks</h2>
-          </div>
+      {/* Story blocks */}
+      <section className="max-w-[1220px] mx-auto pt-[54px]">
+        <div className="mb-[22px]">
+          <span className={`${eyebrow} text-muted`}>In Focus</span>
+          <h2 className="mt-[10px] text-[clamp(2rem,5vw,3rem)] leading-none tracking-[-0.04em]">CMS story blocks</h2>
         </div>
-
-        <div className={styles.storyGrid}>
-          <article className={styles.storyBlock}>
-            <h3>{content?.detailsHeading ?? 'The Details'}</h3>
-            <p>{content?.detailsBody ?? 'Use this section for close-up craftsmanship and texture details.'}</p>
-          </article>
-          <article className={styles.storyBlock}>
-            <h3>{content?.motionHeading ?? 'In Motion'}</h3>
-            <p>{content?.motionBody ?? 'Describe how the case feels and fits into daily use.'}</p>
-          </article>
-          <article className={styles.storyBlock}>
-            <h3>{content?.lifestyleHeading ?? 'The Lifestyle'}</h3>
-            <p>{content?.lifestyleBody ?? 'Use this block for the editorial, aspirational angle around the product.'}</p>
-          </article>
+        <div className="grid grid-cols-3 gap-[18px] max-[860px]:grid-cols-1">
+          {[
+            { h: content?.detailsHeading ?? 'The Details', p: content?.detailsBody ?? 'Use this section for close-up craftsmanship and texture details.' },
+            { h: content?.motionHeading ?? 'In Motion', p: content?.motionBody ?? 'Describe how the case feels and fits into daily use.' },
+            { h: content?.lifestyleHeading ?? 'The Lifestyle', p: content?.lifestyleBody ?? 'Use this block for the editorial, aspirational angle around the product.' },
+          ].map(({ h, p }) => (
+            <article key={h} className={card}>
+              <h3 className="m-0 mb-2">{h}</h3>
+              <p className="mt-[10px] m-0 text-muted leading-[1.75]">{p}</p>
+            </article>
+          ))}
         </div>
       </section>
 
-      <section className={styles.section}>
-        <div className={styles.sectionHeading}>
-          <div>
-            <span className={styles.eyebrow}>Community</span>
-            <h2>What our community says</h2>
-          </div>
+      {/* Testimonials */}
+      <section className="max-w-[1220px] mx-auto pt-[54px]">
+        <div className="mb-[22px]">
+          <span className={`${eyebrow} text-muted`}>Community</span>
+          <h2 className="mt-[10px] text-[clamp(2rem,5vw,3rem)] leading-none tracking-[-0.04em]">What our community says</h2>
         </div>
-
-        <div className={styles.testimonialGrid}>
-          <blockquote className={styles.quote}>
-            “{content?.testimonial1 ?? 'Add your first testimonial in Directus.'}”
-          </blockquote>
-          <blockquote className={styles.quote}>
-            “{content?.testimonial2 ?? 'Add your second testimonial in Directus.'}”
-          </blockquote>
+        <div className="grid grid-cols-2 gap-[18px] max-[640px]:grid-cols-1">
+          <blockquote className={card}>&ldquo;{content?.testimonial1 ?? 'Add your first testimonial in Directus.'}&rdquo;</blockquote>
+          <blockquote className={card}>&ldquo;{content?.testimonial2 ?? 'Add your second testimonial in Directus.'}&rdquo;</blockquote>
         </div>
       </section>
 
-      <section className={styles.section}>
-        <div className={styles.sectionHeading}>
-          <div>
-            <span className={styles.eyebrow}>Shipping & Availability</span>
-            <h2>Checkout testing copy</h2>
-          </div>
+      {/* Shipping */}
+      <section className="max-w-[1220px] mx-auto pt-[54px]">
+        <div className="mb-[22px]">
+          <span className={`${eyebrow} text-muted`}>Shipping &amp; Availability</span>
+          <h2 className="mt-[10px] text-[clamp(2rem,5vw,3rem)] leading-none tracking-[-0.04em]">Checkout testing copy</h2>
         </div>
-
-        <div className={styles.shippingGrid}>
-          <article className={styles.shippingCard}>
-            <h3>Delivery</h3>
-            <p>{content?.shippingDelivery ?? 'Use Directus to explain delivery timing and expectations.'}</p>
-          </article>
-          <article className={styles.shippingCard}>
-            <h3>Ordering</h3>
-            <p>{content?.shippingOrdering ?? 'This ties nicely into your local checkout testing flow.'}</p>
-          </article>
-          <article className={styles.shippingCard}>
-            <h3>Availability</h3>
-            <p>{content?.shippingAvailability ?? 'Use this block for limited drop or low-stock messaging.'}</p>
-          </article>
+        <div className="grid grid-cols-3 gap-[18px] max-[860px]:grid-cols-1">
+          {[
+            { h: 'Delivery', p: content?.shippingDelivery ?? 'Use Directus to explain delivery timing and expectations.' },
+            { h: 'Ordering', p: content?.shippingOrdering ?? 'This ties nicely into your local checkout testing flow.' },
+            { h: 'Availability', p: content?.shippingAvailability ?? 'Use this block for limited drop or low-stock messaging.' },
+          ].map(({ h, p }) => (
+            <article key={h} className={card}>
+              <h3 className="m-0 mb-2">{h}</h3>
+              <p className="mt-[10px] m-0 text-muted leading-[1.75]">{p}</p>
+            </article>
+          ))}
         </div>
       </section>
     </main>
