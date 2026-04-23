@@ -2,7 +2,9 @@
   "name": "@case-couture/frontend",
   "private": true,
   "scripts": {
+    "clean": "rm -rf .next",
     "dev": "next dev",
+    "dev:clean": "npm run clean && next dev",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit"

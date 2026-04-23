@@ -137,9 +137,3 @@ That gives you a stable foundation for:
 - order history and fulfillment
 - adding a CMS/admin layer later without redoing the data model
 
-## Why this setup fits your team
-
-- Your frontend colleague can keep working in `frontend/apps/web`.
-- You can own `backend/apps/api` and `packages/db` without stepping on frontend files.
-- Shared DTOs now live in `packages/types`, so frontend and backend can import the same strict contracts.
-- If you later add a CMS, it can sit on top of the same PostgreSQL schema instead of becoming the source of truth.
