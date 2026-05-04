@@ -2,7 +2,9 @@ export type DeviceBrand = "APPLE" | "SAMSUNG";
 
 export type ProductStatus = "DRAFT" | "ACTIVE" | "ARCHIVED";
 
-export type CurrencyCode = "EUR";
+export type CurrencyCode = "EUR" | "USD" | "RSD";
+
+export type OrderStatus = "PENDING" | "PAID" | "FULFILLED" | "CANCELLED" | "REFUNDED";
 
 export interface InventoryDto {
   quantityOnHand: number;
@@ -10,15 +12,20 @@ export interface InventoryDto {
   availableQuantity: number;
 }
 
+export interface ProductVariantPriceDto {
+  currency: CurrencyCode;
+  amount: number;
+}
+
 export interface ProductVariantDto {
   id: string;
   sku: string;
+  name: string;
   deviceBrand: DeviceBrand;
   deviceModel: string;
   color: string | null;
   material: string | null;
-  priceInCents: number;
-  currency: CurrencyCode;
+  prices: ProductVariantPriceDto[];
   inventory: InventoryDto | null;
 }
 
@@ -28,6 +35,7 @@ export interface ProductDto {
   name: string;
   description: string | null;
   imageUrl: string | null;
+  brand: DeviceBrand;
   status: ProductStatus;
   variants: ProductVariantDto[];
   createdAt: string;
@@ -66,8 +74,10 @@ export interface ProductResponseDto {
 }
 
 export interface ProductListFiltersDto {
-  deviceBrand?: DeviceBrand;
-  deviceModel?: string;
+  brand?: DeviceBrand;
+  model?: string;
+  variantName?: string;
+  inStock?: boolean;
   status?: ProductStatus;
 }
 
@@ -77,4 +87,73 @@ export interface ProductCardDto {
   subtitle: string;
   price: string;
   label: string;
+}
+
+export interface ModelsResponseDto {
+  apple: string[];
+  samsung: string[];
+}
+
+export interface OrderItemDto {
+  id: string;
+  variantId: string;
+  productName: string;
+  variantName: string;
+  deviceModel: string;
+  quantity: number;
+  unitPriceInCents: number;
+  lineTotalInCents: number;
+  currency: CurrencyCode;
+}
+
+export interface OrderShippingAddressDto {
+  fullName: string;
+  line1: string;
+  line2: string | null;
+  city: string;
+  postalCode: string;
+  countryCode: string;
+  phone: string | null;
+}
+
+export interface OrderDto {
+  id: string;
+  orderNumber: string;
+  status: OrderStatus;
+  currency: CurrencyCode;
+  subtotalInCents: number;
+  shippingInCents: number;
+  taxInCents: number;
+  totalInCents: number;
+  customerEmail: string;
+  shippingAddress: OrderShippingAddressDto;
+  items: OrderItemDto[];
+  createdAt: string;
+}
+
+export interface OrderResponseDto {
+  data: OrderDto;
+}
+
+export interface CreateOrderItemInput {
+  variantId: string;
+  quantity: number;
+}
+
+export interface CreateOrderShippingInput {
+  fullName: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  postalCode: string;
+  countryCode: string;
+  phone?: string;
+}
+
+export interface CreateOrderInput {
+  customerId?: string;
+  email: string;
+  currency: CurrencyCode;
+  items: CreateOrderItemInput[];
+  shippingAddress: CreateOrderShippingInput;
 }

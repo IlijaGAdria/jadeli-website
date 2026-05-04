@@ -16,9 +16,13 @@ import { toProductDto } from "../lib/mappers/product.js";
 export const productRoutes = new Hono();
 
 productRoutes.get("/products", async (c) => {
+  const inStockParam = c.req.query("inStock");
+
   const filters: ProductListFiltersDto = {
-    deviceBrand: c.req.query("deviceBrand") as DeviceBrand | undefined,
-    deviceModel: c.req.query("deviceModel") || undefined,
+    brand: c.req.query("brand") as DeviceBrand | undefined,
+    model: c.req.query("model") || undefined,
+    variantName: c.req.query("variantName") || undefined,
+    inStock: inStockParam === "true" ? true : inStockParam === "false" ? false : undefined,
     status: (c.req.query("status") as ProductStatus | undefined) || "ACTIVE",
   };
 

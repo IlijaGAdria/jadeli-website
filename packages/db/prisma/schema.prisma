@@ -5,7 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  
+
 }
 
 enum ProductStatus {
@@ -33,6 +33,7 @@ model Product {
   name        String
   description String?
   imageUrl    String?
+  brand       DeviceBrand
   status      ProductStatus    @default(DRAFT)
   variants    ProductVariant[]
   createdAt   DateTime         @default(now())
@@ -40,32 +41,43 @@ model Product {
 }
 
 model ProductVariant {
-  id             String         @id @default(cuid())
-  sku            String         @unique
+  id             String                @id @default(cuid())
+  sku            String                @unique
+  name           String
   productId      String
-  product        Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product        Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
   deviceBrand    DeviceBrand
   deviceModel    String
   color          String?
   material       String?
-  priceInCents   Int
-  currency       String         @default("EUR")
+  prices         ProductVariantPrice[]
   inventory      InventoryItem?
   orderItems     OrderItem[]
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
 
   @@index([productId])
   @@index([deviceBrand, deviceModel])
 }
 
+model ProductVariantPrice {
+  id        String         @id @default(cuid())
+  variantId String
+  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  currency  String
+  amount    Int
+
+  @@unique([variantId, currency])
+  @@index([variantId])
+}
+
 model InventoryItem {
-  id              String         @id @default(cuid())
-  variantId       String         @unique
-  variant         ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
-  quantityOnHand  Int            @default(0)
-  reservedQuantity Int           @default(0)
-  updatedAt       DateTime       @updatedAt
+  id               String         @id @default(cuid())
+  variantId        String         @unique
+  variant          ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  quantityOnHand   Int            @default(0)
+  reservedQuantity Int            @default(0)
+  updatedAt        DateTime       @updatedAt
 }
 
 model Customer {

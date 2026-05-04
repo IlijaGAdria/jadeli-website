@@ -7,34 +7,32 @@ import { seedProducts } from "../lib/seed-data.js";
 export const devRoutes = new Hono();
 
 devRoutes.post("/seed", async (c) => {
-  const existing = await prisma.product.count();
-
-  if (existing > 0) {
-    return c.json(
-      {
-        message: "Seed skipped because products already exist.",
-        products: existing,
-      },
-      409,
-    );
-  }
+  // Clear in FK-safe order
+  await prisma.inventoryItem.deleteMany();
+  await prisma.productVariantPrice.deleteMany();
+  await prisma.orderItem.deleteMany();
+  await prisma.productVariant.deleteMany();
+  await prisma.product.deleteMany();
 
   for (const product of seedProducts) {
     await prisma.product.create({
       data: {
         slug: product.slug,
         name: product.name,
-        description: product.description,
-        imageUrl: product.imageUrl,
-        status: product.status,
+        brand: product.brand,
+        imageUrl: null,
+        status: "ACTIVE",
         variants: {
           create: product.variants.map((variant) => ({
             sku: variant.sku,
+            name: variant.name,
             deviceBrand: variant.deviceBrand,
             deviceModel: variant.deviceModel,
             color: variant.color,
             material: variant.material,
-            priceInCents: variant.priceInCents,
+            prices: {
+              create: variant.prices,
+            },
             inventory: {
               create: {
                 quantityOnHand: variant.quantityOnHand,
@@ -49,8 +47,5 @@ devRoutes.post("/seed", async (c) => {
 
   const total = await prisma.product.count();
 
-  return c.json({
-    message: "Seed completed.",
-    products: total,
-  });
+  return c.json({ message: "Seed completed.", products: total });
 });

@@ -1,38 +1,34 @@
 import { prisma } from "@case-couture/db";
-import type { DeviceBrand, ProductStatus } from "@case-couture/types";
+import type { ProductListFiltersDto } from "@case-couture/types";
 
 const productInclude = {
   variants: {
     include: {
+      prices: true,
       inventory: true,
     },
   },
 } as const;
 
-type CatalogFilters = {
-  deviceBrand?: DeviceBrand;
-  deviceModel?: string;
-  status?: ProductStatus;
-};
-
-export async function listProducts(filters: CatalogFilters = {}) {
-  const { deviceBrand, deviceModel, status = "ACTIVE" } = filters;
+export async function listProducts(filters: ProductListFiltersDto = {}) {
+  const { brand, model, variantName, inStock, status = "ACTIVE" } = filters;
 
   return prisma.product.findMany({
     where: {
       status,
-      ...(deviceBrand || deviceModel
+      ...(brand ? { brand } : {}),
+      ...(model || variantName || inStock
         ? {
             variants: {
               some: {
-                ...(deviceBrand ? { deviceBrand } : {}),
-                ...(deviceModel
-                  ? {
-                      deviceModel: {
-                        equals: deviceModel,
-                        mode: "insensitive",
-                      },
-                    }
+                ...(model
+                  ? { deviceModel: { contains: model, mode: "insensitive" } }
+                  : {}),
+                ...(variantName
+                  ? { name: { contains: variantName, mode: "insensitive" } }
+                  : {}),
+                ...(inStock
+                  ? { inventory: { quantityOnHand: { gt: 0 } } }
                   : {}),
               },
             },
@@ -40,9 +36,7 @@ export async function listProducts(filters: CatalogFilters = {}) {
         : {}),
     },
     include: productInclude,
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: [{ brand: "asc" }, { name: "asc" }],
   });
 }
 
