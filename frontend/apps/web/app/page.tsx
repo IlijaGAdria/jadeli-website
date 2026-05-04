@@ -68,7 +68,7 @@ export default async function HomePage() {
             Limited drop.
           </p>
           <div className="flex gap-3 flex-wrap">
-            <Button href="/products/butter-kiss-case">BUY NOW</Button>
+            <Button href="/products">BUY NOW</Button>
           </div>
         </div>
 

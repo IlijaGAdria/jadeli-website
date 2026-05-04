@@ -19,6 +19,8 @@ interface PhoneCaseCardProps {
   label?: string;
   imageSrc?: string;
   models?: PhoneModel[];
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function PhoneCaseCard({
@@ -27,22 +29,34 @@ export function PhoneCaseCard({
   label,
   imageSrc = '/Example 01.jpeg',
   models = [],
+  isOpen,
+  onOpenChange,
 }: PhoneCaseCardProps) {
   const [selectedModel, setSelectedModel] = useState<PhoneModel | null>(null);
-  const [showModels, setShowModels] = useState(false);
+  const controlled = isOpen !== undefined;
+  const [localShowModels, setLocalShowModels] = useState(false);
+  const open = controlled ? (isOpen ?? false) : localShowModels;
+
+  function setOpen(val: boolean) {
+    if (controlled) {
+      onOpenChange?.(val);
+    } else {
+      setLocalShowModels(val);
+    }
+  }
+
   const [addedToCart, setAddedToCart] = useState(false);
   const cart = useCart();
-
   const displayImage = imageSrc;
 
   function handleChooseModel() {
-    setShowModels(true);
+    setOpen(true);
     setAddedToCart(false);
   }
 
   function handleModelSelect(model: PhoneModel) {
     setSelectedModel(model);
-    setShowModels(false);
+    setOpen(false);
   }
 
   function handleAddToCart() {
@@ -100,17 +114,17 @@ export function PhoneCaseCard({
           )}
         </div>
 
-        {selectedModel && !showModels && (
+        {selectedModel && !open && (
           <p className="m-0 text-[0.82rem] text-muted italic">{selectedModel.productName}</p>
         )}
 
         <div className="relative mt-auto overflow-visible">
-          {showModels && (
+          {open && (
             <div className="absolute bottom-[calc(100%+8px)] left-0 right-0 z-20 bg-white border border-[rgba(31,23,34,0.12)] rounded-[18px] [box-shadow:0_8px_32px_rgba(113,72,96,0.18)] p-2 flex flex-col gap-[2px] max-h-[220px] overflow-y-auto">
               {models.map((model) => (
                 <button
                   key={model.id}
-                  className={`w-full text-left px-3 py-2 rounded-[10px] border-none text-[0.84rem] cursor-pointer transition-colors font-[inherit] ${selectedModel?.id === model.id ? 'bg-[#1f1722] text-white' : 'bg-transparent text-[#1f1722] hover:bg-[#fff1f8]'}`}
+            className={`w-full text-left px-3 py-2 rounded-[10px] border-none text-[0.84rem] cursor-pointer transition-colors font-[inherit] ${selectedModel?.id === model.id ? 'bg-[#1f1722] text-white' : 'bg-transparent text-[#1f1722] hover:bg-[#fff1f8]'}`}
                   onClick={() => handleModelSelect(model)}
                 >
                   {model.productName}
@@ -120,19 +134,19 @@ export function PhoneCaseCard({
           )}
 
           <div className="flex flex-col gap-2 mt-[10px] pt-1">
-            {!selectedModel && !showModels && (
+            {!selectedModel && !open && (
               <button className={btnPrimary} onClick={handleChooseModel}>
                 Choose Phone Model
               </button>
             )}
 
-            {showModels && (
-              <button className={btnSecondary} onClick={() => setShowModels(false)}>
+            {open && (
+              <button className={btnSecondary} onClick={() => setOpen(false)}>
                 Cancel
               </button>
             )}
 
-            {selectedModel && !showModels && (
+            {selectedModel && !open && (
               <>
                 <button className={btnPrimary} onClick={handleAddToCart} disabled={addedToCart}>
                   {addedToCart ? 'Added!' : 'Add to Cart'}

@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { AnnouncementBar } from '../../components/AnnouncementBar';
 import { useCart } from '../../components/CartContext';
 import { useCurrency } from '../../components/CurrencyContext';
 import { createOrder } from '../../lib/api';
+import { formatAmount, getPriceForCurrency } from '../../lib/currency';
 
 interface Props {
   countries: { name: string; code: string }[];
@@ -25,6 +26,10 @@ export function CheckoutClient({ countries }: Props) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [countryCode, setCountryCode] = useState(countries[0]?.code ?? 'RS');
+  const [countryOpen, setCountryOpen] = useState(false);
+  const [countrySearch, setCountrySearch] = useState('');
+  const countryRef = useRef<HTMLDivElement>(null);
+  const selectedCountryName = countries.find(c => c.code === countryCode)?.name ?? countryCode;
   const [address, setAddress] = useState('');
   const [apt, setApt] = useState('');
   const [city, setCity] = useState('');
@@ -39,7 +44,18 @@ export function CheckoutClient({ countries }: Props) {
   const [serverError, setServerError] = useState('');
 
   const parsePrice = (price: string) => Number.parseFloat(price.replace(/[^0-9.]/g, '')) || 0;
-  const subtotal = items.reduce((s, i) => s + parsePrice(i.price) * i.quantity, 0);
+  const getItemAmount = (item: typeof items[0]) => {
+    if (item.prices?.length) {
+      const match = item.prices.find(p => p.currency === currency);
+      return match?.amount ?? item.prices[0]?.amount ?? 0;
+    }
+    return parsePrice(item.price);
+  };
+  const formatItemPrice = (item: typeof items[0]) => {
+    const amt = getItemAmount(item);
+    return amt ? formatAmount(amt, currency) : item.price;
+  };
+  const subtotal = items.reduce((s, i) => s + getItemAmount(i) * i.quantity, 0);
   const totalCount = items.reduce((s, i) => s + i.quantity, 0);
 
   function touch(field: string) {
@@ -148,10 +164,52 @@ export function CheckoutClient({ countries }: Props) {
           {/* Delivery */}
           <section className="flex flex-col gap-3">
             <h2 className="m-0 text-[1.05rem] font-bold text-[#1f1722] tracking-[-0.01em]">Delivery</h2>
-            <div className="flex flex-col gap-1">
-              <select className={input} value={countryCode} onChange={e => setCountryCode(e.target.value)}>
-                {countries.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
-              </select>
+            <div className="flex flex-col gap-1 relative" ref={countryRef}>
+              {/* Trigger */}
+              <button
+                type="button"
+                onClick={() => { setCountryOpen(v => !v); setCountrySearch(''); }}
+                className={`${input} flex items-center justify-between text-left`}
+              >
+                <span>{selectedCountryName}</span>
+                <span className="ml-2 text-muted text-[0.8rem]">{countryOpen ? '▲' : '▼'}</span>
+              </button>
+              {/* Dropdown */}
+              {countryOpen && (
+                <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-50 bg-white border border-[rgba(31,23,34,0.12)] rounded-xl shadow-[0_8px_32px_rgba(113,72,96,0.18)] overflow-hidden">
+                  <div className="p-2 border-b border-[rgba(31,23,34,0.08)]">
+                    <input
+                      autoFocus
+                      type="text"
+                      placeholder="Search country…"
+                      value={countrySearch}
+                      onChange={e => setCountrySearch(e.target.value)}
+                      className="w-full px-3 py-2 text-[0.9rem] border border-[rgba(31,23,34,0.12)] rounded-lg outline-none font-[inherit] focus:border-[#1f1722]"
+                    />
+                  </div>
+                  <ul className="max-h-[240px] overflow-y-auto m-0 p-1 list-none">
+                    {countries
+                      .filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase()))
+                      .map(c => (
+                        <li key={c.code}>
+                          <button
+                            type="button"
+                            onClick={() => { setCountryCode(c.code); setCountryOpen(false); }}
+                            className={`w-full text-left px-3 py-[11px] text-[0.92rem] rounded-lg border-none cursor-pointer font-[inherit] transition-colors ${
+                              c.code === countryCode ? 'bg-[#1f1722] text-white' : 'bg-transparent text-[#1f1722] hover:bg-[#fff1f8]'
+                            }`}
+                          >
+                            {c.name}
+                          </button>
+                        </li>
+                      ))
+                    }
+                    {countries.filter(c => c.name.toLowerCase().includes(countrySearch.toLowerCase())).length === 0 && (
+                      <li className="px-3 py-3 text-[0.88rem] text-muted">No results</li>
+                    )}
+                  </ul>
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-3 max-[600px]:grid-cols-1">
               <div className="flex flex-col gap-1">
@@ -244,7 +302,7 @@ export function CheckoutClient({ countries }: Props) {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-[6px] shrink-0">
-                    <p className="m-0 text-[0.9rem] font-medium text-[#1f1722] whitespace-nowrap">{item.price}</p>
+                    <p className="m-0 text-[0.9rem] font-medium text-[#1f1722] whitespace-nowrap">{formatItemPrice(item)}</p>
                     <button
                       type="button"
                       className="bg-transparent border-none cursor-pointer text-[0.75rem] text-muted px-[4px] py-[2px] rounded transition-colors hover:bg-[#fbe2ef] hover:text-[#c0182a] font-[inherit]"
@@ -277,7 +335,7 @@ export function CheckoutClient({ countries }: Props) {
             <div className="flex flex-col gap-[10px]">
               <div className="flex justify-between text-[0.88rem] text-[#1f1722]">
                 <span>Subtotal · {totalCount} {totalCount === 1 ? 'item' : 'items'}</span>
-                <span>{subtotal.toFixed(2)} {currency}</span>
+                <span>{formatAmount(subtotal, currency)}</span>
               </div>
               <div className="flex justify-between text-[0.88rem] text-[#1f1722]">
                 <span>Shipping</span>
@@ -291,7 +349,7 @@ export function CheckoutClient({ countries }: Props) {
               <span>Total</span>
               <span className="text-[1.3rem] font-bold">
                 <span className="text-[0.8rem] font-medium text-muted mr-1">{currency}</span>
-                {subtotal.toFixed(2)}
+                {currency === 'RSD' ? Math.round(subtotal / 100).toLocaleString('en-US') : (subtotal / 100).toFixed(2)}
               </span>
             </div>
           </div>
