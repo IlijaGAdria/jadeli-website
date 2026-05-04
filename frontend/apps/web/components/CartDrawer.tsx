@@ -84,7 +84,7 @@ export function CartDrawer() {
               </div>
               <a
                 href="/checkout"
-                className="w-full py-[14px] bg-[#1f1722] text-white border-none rounded-full text-[0.95rem] font-semibold tracking-[0.04em] text-center block transition-opacity hover:opacity-85"
+                className="w-full py-[14px] bg-[#1f1722] !text-white border-none rounded-full text-[0.95rem] font-semibold tracking-[0.04em] text-center block transition-opacity hover:opacity-85 no-underline"
               >
                 Checkout
               </a>

@@ -48,12 +48,21 @@ export function PhoneCaseCard({
 
   return (
     <article className="group flex flex-col bg-white rounded-[24px] overflow-visible [box-shadow:0_20px_50px_rgba(113,72,96,0.14)] transition-transform duration-200 ease-in-out hover:-translate-y-1">
-      <div className="relative aspect-[3/4] overflow-hidden">
+      <div className="relative aspect-[3/4] overflow-hidden rounded-t-[24px]">
         <img
           src={imageSrc}
           alt={name}
           className="w-full h-full object-cover block transition-transform duration-[350ms] ease-in-out group-hover:scale-[1.04]"
         />
+        {/* Hover overlay */}
+        <Link
+          href={`/products/${slug}`}
+          className="absolute inset-0 flex items-end justify-center pb-5 bg-[rgba(31,23,34,0.45)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        >
+          <span className="text-white text-[0.95rem] font-semibold tracking-[0.06em] uppercase border border-white rounded-full px-5 py-2 backdrop-blur-sm">
+            View Details
+          </span>
+        </Link>
         {label && (
           <span className="absolute top-[14px] left-[14px] bg-[#1f1722] text-white text-[0.68rem] font-bold tracking-[0.08em] uppercase px-[10px] py-1 rounded-full">
             {label}
