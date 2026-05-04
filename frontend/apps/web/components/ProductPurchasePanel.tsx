@@ -4,7 +4,9 @@ import { useMemo, useState } from 'react';
 
 import type { ProductDetailDto } from '@case-couture/types';
 
+import { useCurrency } from './CurrencyContext';
 import { useCart } from './CartContext';
+import { formatPrice, getPriceForCurrency } from '../lib/currency';
 
 type Props = {
   product: ProductDetailDto;
@@ -12,6 +14,7 @@ type Props = {
 
 export function ProductPurchasePanel({ product }: Props) {
   const cart = useCart();
+  const { currency } = useCurrency();
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0]?.id ?? '');
   const [added, setAdded] = useState(false);
 
@@ -26,10 +29,11 @@ export function ProductPurchasePanel({ product }: Props) {
   function handleAddToCart() {
     if (!selectedVariant) return;
     cart.addItem({
+      variantId: selectedVariant.id,
       name: product.name,
-      price: `€${(selectedVariant.priceInCents / 100).toFixed(2)}`,
-      size: selectedVariant.deviceModel,
-      imageSrc: '/Example 01.jpeg',
+      price: formatPrice(selectedVariant, currency),
+      size: `${selectedVariant.deviceModel} · ${selectedVariant.name}`,
+      imageSrc: product.imageUrl ?? '/Example 01.jpeg',
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
@@ -38,6 +42,7 @@ export function ProductPurchasePanel({ product }: Props) {
   if (!selectedVariant) return null;
 
   const availableQuantity = selectedVariant.inventory?.availableQuantity ?? 0;
+  const priceStr = formatPrice(selectedVariant, currency);
 
   return (
     <div className="grid gap-4 p-[18px] rounded-[24px] border border-[rgba(31,23,34,0.08)] bg-gradient-to-b from-[rgba(255,255,255,0.96)] to-[rgba(255,240,247,0.95)]">
@@ -48,7 +53,7 @@ export function ProductPurchasePanel({ product }: Props) {
         </div>
         <div>
           <span className="uppercase tracking-[0.14em] text-[0.72rem]">Price</span>
-          <strong className="block mt-2 text-[1.02rem]">€{(selectedVariant.priceInCents / 100).toFixed(2)}</strong>
+          <strong className="block mt-2 text-[1.02rem]">{priceStr}</strong>
         </div>
       </div>
 
@@ -61,11 +66,15 @@ export function ProductPurchasePanel({ product }: Props) {
         value={selectedVariant.id}
         onChange={(event) => setSelectedVariantId(event.target.value)}
       >
-        {product.variants.map((variant) => (
-          <option key={variant.id} value={variant.id}>
-            {variant.deviceModel} · {variant.color ?? 'Signature'} · €{(variant.priceInCents / 100).toFixed(2)}
-          </option>
-        ))}
+        {product.variants.map((variant) => {
+          const p = getPriceForCurrency(variant, currency);
+          const pStr = p ? formatPrice(variant, currency) : '—';
+          return (
+            <option key={variant.id} value={variant.id}>
+              {variant.deviceModel} · {variant.name} · {pStr}
+            </option>
+          );
+        })}
       </select>
 
       <p className="m-0 text-muted">
@@ -85,7 +94,7 @@ export function ProductPurchasePanel({ product }: Props) {
           href="/checkout"
           className="min-h-[52px] px-6 rounded-full inline-flex items-center justify-center font-[inherit] border border-[rgba(31,23,34,0.12)] bg-[rgba(255,255,255,0.7)] text-[#1f1722] no-underline"
         >
-          Test checkout
+          Checkout
         </a>
       </div>
     </div>

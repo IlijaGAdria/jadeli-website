@@ -4,13 +4,15 @@ import { SiteHeader } from '../components/SiteHeader';
 import { HeroCard } from '../components/HeroCard';
 import { ProductTile } from '../components/ProductTile';
 import { getProducts, toProductCard } from '../lib/api';
+import { getCurrentCurrency } from '../lib/server-currency';
 
 const maxW = 'max-w-[var(--max-width)] mx-auto';
 const videoArticle = 'bg-[rgba(255,255,255,0.86)] border border-[rgba(31,23,34,0.10)] rounded-[var(--radius-xl)] overflow-hidden shadow-[var(--shadow)]';
 
 export default async function HomePage() {
+  const currency = await getCurrentCurrency();
   const products = await getProducts();
-  const drops = products.map(toProductCard);
+  const drops = products.map((p) => toProductCard(p, currency));
 
   return (
     <main className="min-h-screen px-5 pb-[72px] max-[640px]:px-[14px] max-[640px]:pb-[52px]">

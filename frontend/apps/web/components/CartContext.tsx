@@ -4,6 +4,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface CartItem {
   id: string;
+  variantId: string;
   name: string;
   price: string;
   size: string;
@@ -27,7 +28,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
 
   function addItem(item: Omit<CartItem, 'id' | 'quantity'>) {
-    const id = `${item.name}__${item.size}`;
+    const id = `${item.variantId}`;
     setItems(prev => {
       const existing = prev.find(i => i.id === id);
       if (existing) {

@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Providers } from '../components/Providers';
+import { getCurrentCurrency } from '../lib/server-currency';
 
 export const metadata: Metadata = {
   title: 'JADELI',
@@ -10,13 +11,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const currency = await getCurrentCurrency();
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        <Providers initialCurrency={currency}>{children}</Providers>
       </body>
     </html>
   );

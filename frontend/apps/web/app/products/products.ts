@@ -1,10 +1,12 @@
 import { getProducts, toProductCard } from '../../lib/api';
+import { getCurrentCurrency } from '../../lib/server-currency';
 
 export async function getShopAllProducts() {
+  const currency = await getCurrentCurrency();
   const products = await getProducts();
 
   return products.map((product) => {
-    const card = toProductCard(product);
+    const card = toProductCard(product, currency);
 
     return {
       id: product.id,
