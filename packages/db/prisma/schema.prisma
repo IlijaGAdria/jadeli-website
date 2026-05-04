@@ -32,6 +32,7 @@ model Product {
   slug        String           @unique
   name        String
   description String?
+  imageUrl    String?
   status      ProductStatus    @default(DRAFT)
   variants    ProductVariant[]
   createdAt   DateTime         @default(now())

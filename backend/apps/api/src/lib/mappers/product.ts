@@ -15,6 +15,7 @@ export function toProductDto(product: ProductRecord): ProductDto {
     slug: product.slug,
     name: product.name,
     description: product.description,
+    imageUrl: product.imageUrl,
     status: product.status,
     createdAt: product.createdAt.toISOString(),
     updatedAt: product.updatedAt.toISOString(),

@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 
+import { env } from "./config/env.js";
 import { healthRoutes } from "./routes/health.js";
 import { productRoutes } from "./routes/products.js";
 
@@ -15,3 +16,8 @@ app.get("/", (c) =>
 
 app.route("/", healthRoutes);
 app.route("/api/v1", productRoutes);
+
+if (env.NODE_ENV !== "production") {
+  const { devRoutes } = await import("./routes/dev.js");
+  app.route("/dev", devRoutes);
+}

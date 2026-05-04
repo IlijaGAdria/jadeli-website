@@ -27,6 +27,7 @@ export interface ProductDto {
   slug: string;
   name: string;
   description: string | null;
+  imageUrl: string | null;
   status: ProductStatus;
   variants: ProductVariantDto[];
   createdAt: string;

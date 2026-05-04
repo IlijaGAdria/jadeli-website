@@ -12,7 +12,7 @@ export async function getShopAllProducts() {
       name: product.name,
       price: card.price,
       label: card.label,
-      imageSrc: '/Example 01.jpeg',
+      imageSrc: product.imageUrl ?? '/Example 01.jpeg',
       sizes: product.variants.map((variant) => variant.deviceModel),
     };
   });
