@@ -4,49 +4,56 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useCart } from './CartContext';
 
-interface Variant {
+interface PhoneModel {
   id: string;
-  deviceModel: string;
-  name: string;
+  productName: string;
+  productSlug: string;
+  imageSrc: string;
+  prices?: { currency: string; amount: number }[];
 }
 
 interface PhoneCaseCardProps {
-  slug: string;
   name: string;
   price: string;
   label?: string;
   imageSrc?: string;
-  variants?: Variant[];
+  models?: PhoneModel[];
 }
 
 export function PhoneCaseCard({
-  slug,
   name,
   price,
   label,
   imageSrc = '/Example 01.jpeg',
-  variants = [],
+  models = [],
 }: PhoneCaseCardProps) {
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [showSizes, setShowSizes] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<PhoneModel | null>(null);
+  const [showModels, setShowModels] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const cart = useCart();
 
-  function handleChooseSize() {
-    setShowSizes(true);
+  const displayImage = selectedModel?.imageSrc ?? imageSrc;
+
+  function handleChooseModel() {
+    setShowModels(true);
     setAddedToCart(false);
   }
 
-  function handleSizeSelect(size: string) {
-    setSelectedSize(size);
-    setShowSizes(false);
+  function handleModelSelect(model: PhoneModel) {
+    setSelectedModel(model);
+    setShowModels(false);
   }
 
   function handleAddToCart() {
-    if (!selectedSize) return;
-    const variant = variants.find((v) => v.name === selectedSize);
-    if (!variant) return;
-    cart.addItem({ variantId: variant.id, name, price, size: selectedSize, imageSrc });
+    if (!selectedModel) return;
+    cart.addItem({
+      variantId: selectedModel.id,
+      name: `${name} — ${selectedModel.productName}`,
+      price,
+      prices: selectedModel.prices ?? [],
+      size: selectedModel.productName,
+      imageSrc: selectedModel.imageSrc,
+    });
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   }
@@ -58,19 +65,21 @@ export function PhoneCaseCard({
     <article className="group flex flex-col bg-white rounded-[24px] overflow-hidden [box-shadow:0_20px_50px_rgba(113,72,96,0.14)] transition-transform duration-200 ease-in-out hover:-translate-y-1" style={{willChange: 'transform'}}>
       <div className="relative aspect-[3/4] overflow-hidden rounded-t-[24px]">
         <img
-          src={imageSrc}
+          src={displayImage}
           alt={name}
           className="w-full h-full object-cover block transition-transform duration-[350ms] ease-in-out group-hover:scale-[1.04]"
         />
-        {/* Hover overlay */}
-        <Link
-          href={`/products/${slug}`}
-          className="absolute inset-0 flex items-end justify-center pb-5 bg-[rgba(31,23,34,0.45)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        >
-          <span className="text-white text-[0.95rem] font-semibold tracking-[0.06em] uppercase border border-white rounded-full px-5 py-2 backdrop-blur-sm">
-            View Details
-          </span>
-        </Link>
+        {/* Hover overlay — links to selected model or nothing */}
+        {selectedModel && (
+          <Link
+            href={`/products/${selectedModel.productSlug}`}
+            className="absolute inset-0 flex items-end justify-center pb-5 bg-[rgba(31,23,34,0.45)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <span className="text-white text-[0.95rem] font-semibold tracking-[0.06em] uppercase border border-white rounded-full px-5 py-2 backdrop-blur-sm">
+              View Details
+            </span>
+          </Link>
+        )}
         {label && (
           <span className="absolute top-[14px] left-[14px] bg-[#1f1722] text-white text-[0.68rem] font-bold tracking-[0.08em] uppercase px-[10px] py-1 rounded-full">
             {label}
@@ -82,50 +91,45 @@ export function PhoneCaseCard({
         <h3 className="m-0 text-[1rem] font-semibold text-[#1f1722] tracking-[-0.01em]">{name}</h3>
         <p className="m-0 text-[0.95rem] text-muted">{price}</p>
 
-        {selectedSize && !showSizes && (
-          <p className="m-0 text-[0.82rem] text-muted italic">{selectedSize}</p>
+        {selectedModel && !showModels && (
+          <p className="m-0 text-[0.82rem] text-muted italic">{selectedModel.productName}</p>
         )}
 
         <div className="relative mt-auto overflow-visible">
-          {showSizes && (
+          {showModels && (
             <div className="absolute bottom-[calc(100%+8px)] left-0 right-0 z-20 bg-white border border-[rgba(31,23,34,0.12)] rounded-[18px] [box-shadow:0_8px_32px_rgba(113,72,96,0.18)] p-2 flex flex-col gap-[2px] max-h-[220px] overflow-y-auto">
-              {variants.map((variant) => (
+              {models.map((model) => (
                 <button
-                  key={variant.id}
-                  className={`w-full text-left px-3 py-2 rounded-[10px] border-none text-[0.84rem] cursor-pointer transition-colors font-[inherit] ${selectedSize === variant.name ? 'bg-[#1f1722] text-white' : 'bg-transparent text-[#1f1722] hover:bg-[#fff1f8]'}`}
-                  onClick={() => handleSizeSelect(variant.name)}
+                  key={model.id}
+                  className={`w-full text-left px-3 py-2 rounded-[10px] border-none text-[0.84rem] cursor-pointer transition-colors font-[inherit] ${selectedModel?.id === model.id ? 'bg-[#1f1722] text-white' : 'bg-transparent text-[#1f1722] hover:bg-[#fff1f8]'}`}
+                  onClick={() => handleModelSelect(model)}
                 >
-                  {variant.name}
+                  {model.productName}
                 </button>
               ))}
             </div>
           )}
 
           <div className="flex flex-col gap-2 mt-[10px] pt-1">
-            {!selectedSize && !showSizes && (
-              <>
-                <button className={btnPrimary} onClick={handleChooseSize}>
-                  Choose Size
-                </button>
-                <Link href={`/products/${slug}`} className={btnSecondary}>
-                  View Details
-                </Link>
-              </>
+            {!selectedModel && !showModels && (
+              <button className={btnPrimary} onClick={handleChooseModel}>
+                Choose Phone Model
+              </button>
             )}
 
-            {showSizes && (
-              <button className={btnSecondary} onClick={() => setShowSizes(false)}>
+            {showModels && (
+              <button className={btnSecondary} onClick={() => setShowModels(false)}>
                 Cancel
               </button>
             )}
 
-            {selectedSize && !showSizes && (
+            {selectedModel && !showModels && (
               <>
                 <button className={btnPrimary} onClick={handleAddToCart} disabled={addedToCart}>
                   {addedToCart ? 'Added!' : 'Add to Cart'}
                 </button>
-                <button className={btnSecondary} onClick={handleChooseSize}>
-                  Change Size
+                <button className={btnSecondary} onClick={handleChooseModel}>
+                  Change Model
                 </button>
               </>
             )}

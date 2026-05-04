@@ -3,8 +3,9 @@ import { notFound } from 'next/navigation';
 
 import { AnnouncementBar } from '../../../components/AnnouncementBar';
 import { ProductPurchasePanel } from '../../../components/ProductPurchasePanel';
+import { SiteFooter } from '../../../components/SiteFooter';
 import { SiteHeader } from '../../../components/SiteHeader';
-import { getPrimaryVariant, getProduct } from '../../../lib/api';
+import { getPrimaryVariant, getProduct, getProducts } from '../../../lib/api';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -15,11 +16,13 @@ const eyebrow = "uppercase tracking-[0.14em] text-[0.76rem]";
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const [product, allProducts] = await Promise.all([getProduct(slug), getProducts()]);
 
   if (!product) {
     notFound();
   }
+
+  const allDevices = allProducts.map((p) => ({ slug: p.slug, name: p.name }));
 
   const primaryVariant = getPrimaryVariant(product);
   const availableQuantity = primaryVariant?.inventory?.availableQuantity ?? 0;
@@ -58,7 +61,7 @@ export default async function ProductPage({ params }: Props) {
             </div>
           </div>
 
-          <ProductPurchasePanel product={product} />
+          <ProductPurchasePanel product={product} allDevices={allDevices} />
         </div>
 
         <div className={card}>
@@ -120,6 +123,8 @@ export default async function ProductPage({ params }: Props) {
           ))}
         </div>
       </section>
+
+      <SiteFooter />
     </main>
   );
 }

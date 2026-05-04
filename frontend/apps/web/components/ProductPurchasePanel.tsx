@@ -1,30 +1,28 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import type { ProductDetailDto } from '@case-couture/types';
 
 import { useCurrency } from './CurrencyContext';
 import { useCart } from './CartContext';
-import { formatPrice, getPriceForCurrency } from '../lib/currency';
+import { formatPrice } from '../lib/currency';
+
+type DeviceOption = { slug: string; name: string };
 
 type Props = {
   product: ProductDetailDto;
+  allDevices: DeviceOption[];
 };
 
-export function ProductPurchasePanel({ product }: Props) {
+export function ProductPurchasePanel({ product, allDevices }: Props) {
+  const router = useRouter();
   const cart = useCart();
   const { currency } = useCurrency();
-  const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0]?.id ?? '');
   const [added, setAdded] = useState(false);
 
-  const selectedVariant = useMemo(
-    () =>
-      product.variants.find((variant) => variant.id === selectedVariantId) ??
-      product.variants[0] ??
-      null,
-    [product.variants, selectedVariantId],
-  );
+  const selectedVariant = product.variants[0] ?? null;
 
   function handleAddToCart() {
     if (!selectedVariant) return;
@@ -32,6 +30,7 @@ export function ProductPurchasePanel({ product }: Props) {
       variantId: selectedVariant.id,
       name: product.name,
       price: formatPrice(selectedVariant, currency),
+      prices: selectedVariant.prices,
       size: `${selectedVariant.deviceModel} · ${selectedVariant.name}`,
       imageSrc: product.imageUrl ?? '/Example 01.jpeg',
     });
@@ -48,7 +47,7 @@ export function ProductPurchasePanel({ product }: Props) {
     <div className="grid gap-4 p-[18px] rounded-[24px] border border-[rgba(31,23,34,0.08)] bg-gradient-to-b from-[rgba(255,255,255,0.96)] to-[rgba(255,240,247,0.95)]">
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <span className="uppercase tracking-[0.14em] text-[0.72rem]">Selected fit</span>
+          <span className="uppercase tracking-[0.14em] text-[0.72rem]">Selected device</span>
           <strong className="block mt-2 text-[1.02rem]">{selectedVariant.deviceModel}</strong>
         </div>
         <div>
@@ -57,24 +56,20 @@ export function ProductPurchasePanel({ product }: Props) {
         </div>
       </div>
 
-      <label className="uppercase tracking-[0.14em] text-[0.72rem]" htmlFor="variant-select">
+      <label className="uppercase tracking-[0.14em] text-[0.72rem]" htmlFor="device-select">
         Choose device
       </label>
       <select
-        id="variant-select"
+        id="device-select"
         className="min-h-[52px] rounded-[16px] border border-[rgba(31,23,34,0.12)] px-4 bg-white font-[inherit]"
-        value={selectedVariant.id}
-        onChange={(event) => setSelectedVariantId(event.target.value)}
+        value={product.slug}
+        onChange={(e) => { if (e.target.value !== product.slug) router.push(`/products/${e.target.value}`); }}
       >
-        {product.variants.map((variant) => {
-          const p = getPriceForCurrency(variant, currency);
-          const pStr = p ? formatPrice(variant, currency) : '—';
-          return (
-            <option key={variant.id} value={variant.id}>
-              {variant.deviceModel} · {variant.name} · {pStr}
-            </option>
-          );
-        })}
+        {allDevices.map((device) => (
+          <option key={device.slug} value={device.slug}>
+            {device.name}
+          </option>
+        ))}
       </select>
 
       <p className="m-0 text-muted">

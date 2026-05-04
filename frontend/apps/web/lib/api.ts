@@ -68,14 +68,10 @@ export function toProductCard(product: ProductDto, currency: CurrencyCode) {
   return {
     slug: product.slug,
     name: product.name,
-    subtitle:
-      product.description ??
-      product.variants
-        .slice(0, 2)
-        .map((variant) => variant.deviceModel)
-        .join(' / '),
+    subtitle: product.description ?? 'Premium croc texture. Signature gold logo.',
     price: cheapest ? formatPrice(cheapest, currency) : '—',
     label: lowStock ? 'Limited' : 'Available',
+    imageUrl: product.imageUrl ?? null,
   };
 }
 

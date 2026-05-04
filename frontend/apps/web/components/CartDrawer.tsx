@@ -1,18 +1,34 @@
 'use client';
 
 import { useCart } from './CartContext';
+import { useCurrency } from './CurrencyContext';
+import { formatAmount } from '../lib/currency';
+import type { CurrencyCode } from '@case-couture/types';
+
+function resolvePrice(prices: { currency: string; amount: number }[], currency: CurrencyCode): number {
+  return (
+    prices.find((p) => p.currency === currency)?.amount ??
+    prices.find((p) => p.currency === 'EUR')?.amount ??
+    prices[0]?.amount ??
+    0
+  );
+}
 
 export function CartDrawer() {
   const { items, isOpen, closeCart, removeItem } = useCart();
-  const parsePrice = (price: string) => Number.parseFloat(price.replace(/[^0-9.]/g, '')) || 0;
-
-  // Extract the non-numeric prefix from the first item's price string (e.g. '€', '$', 'RSD ')
-  const currencyPrefix = items[0]?.price.match(/^[^0-9]+/)?.[0] ?? '€';
+  const { currency } = useCurrency();
 
   const total = items.reduce((sum, item) => {
-    const price = parsePrice(item.price);
-    return sum + price * item.quantity;
+    let amount = 0;
+    if (item.prices && item.prices.length > 0) {
+      amount = resolvePrice(item.prices, currency);
+    }
+    return sum + amount * item.quantity;
   }, 0);
+
+  // total is in minor units (cents). Format only if we have prices data.
+  const hasRawPrices = items.every((i) => i.prices && i.prices.length > 0);
+  const totalStr = hasRawPrices ? formatAmount(total, currency) : items.reduce((_, item) => item.price, '—');
 
   const totalCount = items.reduce((s, i) => s + i.quantity, 0);
 
@@ -57,14 +73,17 @@ export function CartDrawer() {
           <>
             {/* Items */}
             <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-[18px]">
-              {items.map(item => (
+              {items.map(item => {
+                const itemAmount = item.prices?.length ? resolvePrice(item.prices, currency) : 0;
+                const itemPriceStr = itemAmount ? formatAmount(itemAmount, currency) : item.price;
+                return (
                 <div key={item.id} className="flex gap-[14px] items-start">
                   <img src={item.imageSrc} alt={item.name} className="w-[70px] h-[88px] object-cover rounded-xl shrink-0" />
                   <div className="flex-1 flex flex-col gap-1">
                     <p className="m-0 text-[0.9rem] font-semibold text-[#1f1722]">{item.name}</p>
                     <p className="m-0 text-[0.79rem] text-muted">{item.size}</p>
                     <p className="m-0 text-[0.88rem] font-medium text-[#1f1722]">
-                      {item.price}
+                      {itemPriceStr}
                       {item.quantity > 1 && <span className="font-normal text-muted"> × {item.quantity}</span>}
                     </p>
                   </div>
@@ -76,14 +95,15 @@ export function CartDrawer() {
                     ✕
                   </button>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Footer */}
             <div className="px-6 pt-5 pb-9 border-t border-[rgba(31,23,34,0.12)] flex flex-col gap-[14px] shrink-0">
               <div className="flex justify-between text-[1rem] font-bold text-[#1f1722]">
                 <span>Total</span>
-                <span>{currencyPrefix}{total.toFixed(2)}</span>
+                <span>{totalStr}</span>
               </div>
               <a
                 href="/checkout"

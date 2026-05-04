@@ -5,14 +5,29 @@ import { HeroCard } from '../components/HeroCard';
 import { ProductTile } from '../components/ProductTile';
 import { getProducts, toProductCard } from '../lib/api';
 import { getCurrentCurrency } from '../lib/server-currency';
+import { SiteFooter } from '../components/SiteFooter';
 
 const maxW = 'max-w-[var(--max-width)] mx-auto';
 const videoArticle = 'bg-[rgba(255,255,255,0.86)] border border-[rgba(31,23,34,0.10)] rounded-[var(--radius-xl)] overflow-hidden shadow-[var(--shadow)]';
 
+const FEATURED = [
+  { slug: 'iphone-17-pro-max', label: 'New Drop' },
+  { slug: 'galaxy-s26-ultra',  label: 'Best Seller' },
+  { slug: 'iphone-16-pro',     label: 'Popular' },
+  { slug: 'galaxy-s25-edge',   label: 'Limited' },
+];
+
 export default async function HomePage() {
   const currency = await getCurrentCurrency();
   const products = await getProducts();
-  const drops = products.map((p) => toProductCard(p, currency));
+  const bySlug = Object.fromEntries(products.map((p) => [p.slug, p]));
+
+  const drops = FEATURED.flatMap(({ slug, label }) => {
+    const p = bySlug[slug];
+    if (!p) return [];
+    const card = toProductCard(p, currency);
+    return [{ ...card, label }];
+  });
 
   return (
     <main className="min-h-screen px-5 pb-[72px] max-[640px]:px-[14px] max-[640px]:pb-[52px]">
@@ -124,22 +139,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <footer className={`${maxW} mt-[72px] pt-12 border-t border-[rgba(31,23,34,0.10)]`}>
-        <div className="grid grid-cols-3 gap-6">
-          <div>
-            <h4 className="text-[0.78rem] uppercase tracking-[0.14em] mt-0 mb-[10px]">JADELI</h4>
-            <p className="m-0 text-muted text-[0.95rem] leading-[1.6]">Luxury in the details.</p>
-          </div>
-          <div>
-            <h4 className="text-[0.78rem] uppercase tracking-[0.14em] mt-0 mb-[10px]">Contact</h4>
-            <p className="m-0 text-muted text-[0.95rem] leading-[1.6]">info@jadeli.com</p>
-          </div>
-          <div>
-            <h4 className="text-[0.78rem] uppercase tracking-[0.14em] mt-0 mb-[10px]">Follow us</h4>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted text-[0.95rem] no-underline">Instagram</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
 
     </main>
   );

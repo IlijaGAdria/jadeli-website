@@ -1,12 +1,18 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
+export interface CartItemPrice {
+  currency: string;
+  amount: number;
+}
 
 export interface CartItem {
   id: string;
   variantId: string;
   name: string;
   price: string;
+  prices: CartItemPrice[];
   size: string;
   imageSrc: string;
   quantity: number;
@@ -21,11 +27,28 @@ interface CartContextValue {
   closeCart: () => void;
 }
 
+const CART_STORAGE_KEY = 'jadeli_cart';
+
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      if (stored) setItems(JSON.parse(stored));
+    } catch {}
+  }, []);
+
+  // Persist to localStorage whenever items change
+  useEffect(() => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    } catch {}
+  }, [items]);
 
   function addItem(item: Omit<CartItem, 'id' | 'quantity'>) {
     const id = `${item.variantId}`;

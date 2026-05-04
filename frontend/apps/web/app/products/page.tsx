@@ -1,4 +1,5 @@
 import { AnnouncementBar } from '../../components/AnnouncementBar';
+import { SiteFooter } from '../../components/SiteFooter';
 import { SiteHeader } from '../../components/SiteHeader';
 import { ShopAllShell } from './ShopAllShell';
 import { getShopAllProducts } from './products';
@@ -24,6 +25,8 @@ export default async function ShopAllPage() {
 
         <ShopAllShell products={products} />
       </main>
+
+      <SiteFooter />
     </>
   );
 }
