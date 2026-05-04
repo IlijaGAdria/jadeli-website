@@ -2,6 +2,12 @@
 
 import { PhoneCaseCard } from '../../components/PhoneCaseCard';
 
+interface Variant {
+  id: string;
+  deviceModel: string;
+  name: string;
+}
+
 interface Product {
   id: string;
   slug: string;
@@ -9,7 +15,7 @@ interface Product {
   price: string;
   label?: string;
   imageSrc?: string;
-  sizes?: string[];
+  variants?: Variant[];
 }
 
 export function ShopAllShell({ products }: { products: Product[] }) {
@@ -23,7 +29,7 @@ export function ShopAllShell({ products }: { products: Product[] }) {
           price={product.price}
           label={product.label}
           imageSrc={product.imageSrc}
-          sizes={product.sizes}
+          variants={product.variants}
         />
       ))}
     </div>

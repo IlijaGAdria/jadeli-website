@@ -6,6 +6,9 @@ export function CartDrawer() {
   const { items, isOpen, closeCart, removeItem } = useCart();
   const parsePrice = (price: string) => Number.parseFloat(price.replace(/[^0-9.]/g, '')) || 0;
 
+  // Extract the non-numeric prefix from the first item's price string (e.g. '€', '$', 'RSD ')
+  const currencyPrefix = items[0]?.price.match(/^[^0-9]+/)?.[0] ?? '€';
+
   const total = items.reduce((sum, item) => {
     const price = parsePrice(item.price);
     return sum + price * item.quantity;
@@ -80,7 +83,7 @@ export function CartDrawer() {
             <div className="px-6 pt-5 pb-9 border-t border-[rgba(31,23,34,0.12)] flex flex-col gap-[14px] shrink-0">
               <div className="flex justify-between text-[1rem] font-bold text-[#1f1722]">
                 <span>Total</span>
-                <span>€{total.toFixed(2)}</span>
+                <span>{currencyPrefix}{total.toFixed(2)}</span>
               </div>
               <a
                 href="/checkout"

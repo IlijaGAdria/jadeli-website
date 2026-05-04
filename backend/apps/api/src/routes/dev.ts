@@ -20,7 +20,7 @@ devRoutes.post("/seed", async (c) => {
         slug: product.slug,
         name: product.name,
         brand: product.brand,
-        imageUrl: null,
+        imageUrl: product.imageUrl ?? null,
         status: "ACTIVE",
         variants: {
           create: product.variants.map((variant) => ({

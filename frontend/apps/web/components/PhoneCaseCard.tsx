@@ -4,13 +4,19 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useCart } from './CartContext';
 
+interface Variant {
+  id: string;
+  deviceModel: string;
+  name: string;
+}
+
 interface PhoneCaseCardProps {
   slug: string;
   name: string;
   price: string;
   label?: string;
   imageSrc?: string;
-  sizes?: string[];
+  variants?: Variant[];
 }
 
 export function PhoneCaseCard({
@@ -19,7 +25,7 @@ export function PhoneCaseCard({
   price,
   label,
   imageSrc = '/Example 01.jpeg',
-  sizes = [],
+  variants = [],
 }: PhoneCaseCardProps) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [showSizes, setShowSizes] = useState(false);
@@ -38,7 +44,9 @@ export function PhoneCaseCard({
 
   function handleAddToCart() {
     if (!selectedSize) return;
-    cart.addItem({ name, price, size: selectedSize, imageSrc });
+    const variant = variants.find((v) => v.name === selectedSize);
+    if (!variant) return;
+    cart.addItem({ variantId: variant.id, name, price, size: selectedSize, imageSrc });
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   }
@@ -47,7 +55,7 @@ export function PhoneCaseCard({
   const btnSecondary = "w-full py-[10px] bg-transparent text-[#1f1722] border border-[rgba(31,23,34,0.12)] rounded-full text-[0.85rem] font-medium cursor-pointer font-[inherit] transition-colors hover:border-[#1f1722] no-underline flex items-center justify-center";
 
   return (
-    <article className="group flex flex-col bg-white rounded-[24px] overflow-visible [box-shadow:0_20px_50px_rgba(113,72,96,0.14)] transition-transform duration-200 ease-in-out hover:-translate-y-1">
+    <article className="group flex flex-col bg-white rounded-[24px] overflow-hidden [box-shadow:0_20px_50px_rgba(113,72,96,0.14)] transition-transform duration-200 ease-in-out hover:-translate-y-1" style={{willChange: 'transform'}}>
       <div className="relative aspect-[3/4] overflow-hidden rounded-t-[24px]">
         <img
           src={imageSrc}
@@ -70,7 +78,7 @@ export function PhoneCaseCard({
         )}
       </div>
 
-      <div className="p-[18px] flex flex-col gap-[6px] flex-1 rounded-b-[24px]">
+      <div className="p-[18px] flex flex-col gap-[6px] flex-1 rounded-b-[24px] overflow-visible">
         <h3 className="m-0 text-[1rem] font-semibold text-[#1f1722] tracking-[-0.01em]">{name}</h3>
         <p className="m-0 text-[0.95rem] text-muted">{price}</p>
 
@@ -78,16 +86,16 @@ export function PhoneCaseCard({
           <p className="m-0 text-[0.82rem] text-muted italic">{selectedSize}</p>
         )}
 
-        <div className="relative mt-auto">
+        <div className="relative mt-auto overflow-visible">
           {showSizes && (
             <div className="absolute bottom-[calc(100%+8px)] left-0 right-0 z-20 bg-white border border-[rgba(31,23,34,0.12)] rounded-[18px] [box-shadow:0_8px_32px_rgba(113,72,96,0.18)] p-2 flex flex-col gap-[2px] max-h-[220px] overflow-y-auto">
-              {sizes.map((size) => (
+              {variants.map((variant) => (
                 <button
-                  key={size}
-                  className={`w-full text-left px-3 py-2 rounded-[10px] border-none text-[0.84rem] cursor-pointer transition-colors font-[inherit] ${selectedSize === size ? 'bg-[#1f1722] text-white' : 'bg-transparent text-[#1f1722] hover:bg-[#fff1f8]'}`}
-                  onClick={() => handleSizeSelect(size)}
+                  key={variant.id}
+                  className={`w-full text-left px-3 py-2 rounded-[10px] border-none text-[0.84rem] cursor-pointer transition-colors font-[inherit] ${selectedSize === variant.name ? 'bg-[#1f1722] text-white' : 'bg-transparent text-[#1f1722] hover:bg-[#fff1f8]'}`}
+                  onClick={() => handleSizeSelect(variant.name)}
                 >
-                  {size}
+                  {variant.name}
                 </button>
               ))}
             </div>
