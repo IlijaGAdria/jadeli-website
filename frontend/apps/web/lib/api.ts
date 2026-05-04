@@ -9,19 +9,16 @@ import type {
 } from '@case-couture/types';
 
 import { formatPrice, getPriceForCurrency } from './currency';
+import { env } from './env';
 
 function getApiUrl() {
-  const apiUrl = process.env.API_URL;
-  if (!apiUrl) {
-    throw new Error('API_URL is not configured for the frontend.');
-  }
-  return apiUrl;
+  return env.API_URL;
 }
 
 function getHeaders(extra?: HeadersInit) {
   const headers = new Headers(extra);
-  if (process.env.API_KEY) {
-    headers.set('Authorization', `Bearer ${process.env.API_KEY}`);
+  if (env.API_KEY) {
+    headers.set('Authorization', `Bearer ${env.API_KEY}`);
   }
   return headers;
 }
@@ -80,9 +77,10 @@ export function getPrimaryVariant(product: ProductDetailDto) {
 }
 
 export async function createOrder(input: CreateOrderInput) {
-  const res = await fetch(`${getApiUrl()}/orders`, {
+  // POST through the Next.js API route so the backend URL & key stay server-side only.
+  const res = await fetch('/api/orders', {
     method: 'POST',
-    headers: getHeaders({ 'Content-Type': 'application/json' }),
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
     cache: 'no-store',
   });

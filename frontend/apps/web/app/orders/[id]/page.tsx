@@ -18,7 +18,17 @@ const eyebrow = 'uppercase tracking-[0.14em] text-[0.76rem] text-muted';
 
 export default async function OrderConfirmationPage({ params }: Props) {
   const { id } = await params;
-  const order = await getOrder(id);
+
+  let order: Awaited<ReturnType<typeof getOrder>> = null;
+  try {
+    order = await getOrder(id);
+  } catch {
+    return (
+      <main className="min-h-screen flex items-center justify-center px-5">
+        <p className="text-muted text-[1rem]">Unable to load order — please try again later.</p>
+      </main>
+    );
+  }
 
   if (!order) {
     notFound();

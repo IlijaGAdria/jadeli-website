@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useCart } from './CartContext';
 import { CurrencySwitcher } from './CurrencySwitcher';
 
@@ -10,7 +11,7 @@ export function SiteHeader() {
   return (
     <header className="max-w-[1220px] mx-auto px-0 grid grid-cols-[1fr_auto_1fr] gap-[18px] items-center overflow-hidden">
       <a className="flex items-center leading-none" href="/">
-        <img src="/jadeli-logo.png" alt="JADELI" className="h-20 w-auto" />
+        <Image src="/jadeli-logo.png" alt="JADELI" width={160} height={80} className="h-20 w-auto" priority />
       </a>
 
       <nav className="flex gap-[18px] items-center text-muted text-[0.95rem] justify-center">

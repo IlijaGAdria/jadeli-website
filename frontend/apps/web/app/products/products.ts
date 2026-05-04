@@ -5,14 +5,19 @@ const STYLE_ORDER = ['Clear', 'MagSafe', 'Leather', 'Rugged'];
 
 const STYLE_IMAGES: Record<string, string> = {
   Clear: '/Example 01.jpeg',
-  MagSafe: '/Example 01.jpeg',
-  Leather: '/Example 01.jpeg',
-  Rugged: '/Example 01.jpeg',
+  MagSafe: '/Example 0.3.png',
+  Leather: '/Example 0.4.png',
+  Rugged: '/Example 0.5.png',
 };
 
 export async function getShopAllProducts() {
   const currency = await getCurrentCurrency();
-  const products = await getProducts();
+  let products: Awaited<ReturnType<typeof getProducts>> = [];
+  try {
+    products = await getProducts();
+  } catch {
+    return [];
+  }
 
   // Group variants by style name → each style becomes one card
   const styleMap = new Map<string, {

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -6,17 +7,39 @@ import { ProductPurchasePanel } from '../../../components/ProductPurchasePanel';
 import { SiteFooter } from '../../../components/SiteFooter';
 import { SiteHeader } from '../../../components/SiteHeader';
 import { getPrimaryVariant, getProduct, getProducts } from '../../../lib/api';
+import allReviews from '../../../lib/reviews.json';
 
 type Props = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ style?: string }>;
+};
+
+const STYLE_IMAGES: Record<string, string> = {
+  Clear: '/Example 01.jpeg',
+  MagSafe: '/Example 0.3.png',
+  Leather: '/Example 0.4.png',
+  Rugged: '/Example 0.5.png',
 };
 
 const card = "bg-[rgba(255,255,255,0.86)] border border-[rgba(31,23,34,0.12)] rounded-[32px] [box-shadow:0_20px_50px_rgba(113,72,96,0.14)] p-6";
 const eyebrow = "uppercase tracking-[0.14em] text-[0.76rem]";
 
-export default async function ProductPage({ params }: Props) {
+export default async function ProductPage({ params, searchParams }: Props) {
   const { slug } = await params;
-  const [product, allProducts] = await Promise.all([getProduct(slug), getProducts()]);
+  const { style } = await searchParams;
+  const reviews = style ? (allReviews as Record<string, typeof allReviews.Clear>)[style] ?? [] : [];
+
+  let product: Awaited<ReturnType<typeof getProduct>> = null;
+  let allProducts: Awaited<ReturnType<typeof getProducts>> = [];
+  try {
+    [product, allProducts] = await Promise.all([getProduct(slug), getProducts()]);
+  } catch {
+    return (
+      <main className="min-h-screen flex items-center justify-center px-5">
+        <p className="text-muted text-[1rem]">Unable to load product — please try again later.</p>
+      </main>
+    );
+  }
 
   if (!product) {
     notFound();
@@ -64,11 +87,27 @@ export default async function ProductPage({ params }: Props) {
           <ProductPurchasePanel product={product} allDevices={allDevices} />
         </div>
 
-        <div className={card}>
-          <span className={`${eyebrow} text-muted`}>Why It&apos;s Special</span>
-          <p className="mt-[10px] text-muted leading-[1.75]">
-            {content?.whyItsSpecial ?? 'Add your hero storytelling copy in Directus to replace this placeholder.'}
-          </p>
+        {/* Product image */}
+        <div className={`${card} overflow-hidden p-0`}>
+          {(() => {
+            const imgSrc = (style && STYLE_IMAGES[style]) ? STYLE_IMAGES[style] : product.imageUrl;
+            return imgSrc ? (
+              <div className="relative aspect-[3/4] w-full bg-[#f5eef2]">
+                <Image
+                  src={imgSrc}
+                  alt={style ? `${style} case` : product.name}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            ) : (
+              <div
+                className="aspect-[3/4] w-full"
+                style={{ background: 'linear-gradient(160deg, #f8cddd, #fff0f6)' }}
+              />
+            );
+          })()}
         </div>
       </section>
 
@@ -92,17 +131,38 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="max-w-[1220px] mx-auto pt-[54px]">
-        <div className="mb-[22px]">
-          <span className={`${eyebrow} text-muted`}>Community</span>
-          <h2 className="mt-[10px] text-[clamp(2rem,5vw,3rem)] leading-none tracking-[-0.04em]">What our community says</h2>
-        </div>
-        <div className="grid grid-cols-2 gap-[18px] max-[640px]:grid-cols-1">
-          <blockquote className={card}>&ldquo;{content?.testimonial1 ?? 'Add your first testimonial in Directus.'}&rdquo;</blockquote>
-          <blockquote className={card}>&ldquo;{content?.testimonial2 ?? 'Add your second testimonial in Directus.'}&rdquo;</blockquote>
-        </div>
-      </section>
+      {/* Reviews */}
+      {reviews.length > 0 && (
+        <section className="max-w-[1220px] mx-auto pt-[54px]">
+          <div className="mb-[22px]">
+            <span className={`${eyebrow} text-muted`}>Community</span>
+            <h2 className="mt-[10px] text-[clamp(2rem,5vw,3rem)] leading-none tracking-[-0.04em]">
+              What our customers say
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 gap-[18px] max-[640px]:grid-cols-1">
+            {reviews.map((r) => (
+              <article key={r.id} className={card}>
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <div>
+                    <p className="m-0 font-semibold text-[0.95rem] text-[#1f1722]">{r.author}</p>
+                    <p className="m-0 text-[0.78rem] text-muted">{r.location} · {r.date}</p>
+                  </div>
+                  <div className="flex gap-[2px] shrink-0">
+                    {Array.from({ length: r.rating }).map((_, i) => (
+                      <span key={i} className="text-[#b8860b] text-[0.9rem]">★</span>
+                    ))}
+                    {Array.from({ length: 5 - r.rating }).map((_, i) => (
+                      <span key={i} className="text-[#e0d0c0] text-[0.9rem]">★</span>
+                    ))}
+                  </div>
+                </div>
+                <p className="m-0 text-muted leading-[1.75] text-[0.95rem]">&ldquo;{r.body}&rdquo;</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Shipping */}
       <section className="max-w-[1220px] mx-auto pt-[54px]">

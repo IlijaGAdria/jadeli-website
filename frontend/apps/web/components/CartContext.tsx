@@ -21,8 +21,9 @@ export interface CartItem {
 interface CartContextValue {
   items: CartItem[];
   isOpen: boolean;
-  addItem: (item: Omit<CartItem, 'id' | 'quantity'>) => void;
+  addItem: (item: Omit<CartItem, 'id' | 'quantity'>, options?: { silent?: boolean }) => void;
   removeItem: (id: string) => void;
+  decrementItem: (id: string) => void;
   openCart: () => void;
   closeCart: () => void;
 }
@@ -50,7 +51,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } catch {}
   }, [items]);
 
-  function addItem(item: Omit<CartItem, 'id' | 'quantity'>) {
+  function addItem(item: Omit<CartItem, 'id' | 'quantity'>, options?: { silent?: boolean }) {
     const id = `${item.variantId}`;
     setItems(prev => {
       const existing = prev.find(i => i.id === id);
@@ -59,11 +60,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       return [...prev, { ...item, id, quantity: 1 }];
     });
-    setIsOpen(true);
+    if (!options?.silent) setIsOpen(true);
   }
 
   function removeItem(id: string) {
     setItems(prev => prev.filter(i => i.id !== id));
+  }
+
+  function decrementItem(id: string) {
+    setItems(prev =>
+      prev.flatMap(i => {
+        if (i.id !== id) return [i];
+        if (i.quantity <= 1) return [];
+        return [{ ...i, quantity: i.quantity - 1 }];
+      })
+    );
   }
 
   return (
@@ -72,6 +83,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       isOpen,
       addItem,
       removeItem,
+      decrementItem,
       openCart: () => setIsOpen(true),
       closeCart: () => setIsOpen(false),
     }}>

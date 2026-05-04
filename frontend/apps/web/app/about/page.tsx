@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { AnnouncementBar } from '../../components/AnnouncementBar';
 import { SiteFooter } from '../../components/SiteFooter';
 import { SiteHeader } from '../../components/SiteHeader';
@@ -20,11 +21,11 @@ export default function AboutPage() {
           <h1 className="m-0 text-[clamp(2.8rem,8vw,5.5rem)] leading-[0.95] tracking-[-0.04em]">Where luxury meets everyday.</h1>
         </div>
         <div className="grid grid-cols-2 gap-[18px] max-[640px]:grid-cols-1">
-          <div className="aspect-[3/4] overflow-hidden rounded-[var(--radius-xl)]">
-            <img src="/Example%2001.jpeg" alt="JADELI pink croc case" className="w-full h-full object-cover" />
+          <div className="relative aspect-[3/4] overflow-hidden rounded-[var(--radius-xl)]">
+            <Image src="/Example 01.jpeg" alt="JADELI pink croc case" fill className="object-cover" />
           </div>
-          <div className="aspect-[3/4] overflow-hidden rounded-[var(--radius-xl)]">
-            <img src="/Example%2002.jpeg" alt="JADELI black croc case" className="w-full h-full object-cover" />
+          <div className="relative aspect-[3/4] overflow-hidden rounded-[var(--radius-xl)]">
+            <Image src="/Example 02.jpeg" alt="JADELI black croc case" fill className="object-cover" />
           </div>
         </div>
       </section>

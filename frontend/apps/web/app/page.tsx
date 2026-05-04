@@ -1,33 +1,51 @@
+import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '@case-couture/ui';
 import { AnnouncementBar } from '../components/AnnouncementBar';
 import { SiteHeader } from '../components/SiteHeader';
 import { HeroCard } from '../components/HeroCard';
-import { ProductTile } from '../components/ProductTile';
-import { getProducts, toProductCard } from '../lib/api';
+import { getProducts } from '../lib/api';
 import { getCurrentCurrency } from '../lib/server-currency';
 import { SiteFooter } from '../components/SiteFooter';
 
 const maxW = 'max-w-[var(--max-width)] mx-auto';
 const videoArticle = 'bg-[rgba(255,255,255,0.86)] border border-[rgba(31,23,34,0.10)] rounded-[var(--radius-xl)] overflow-hidden shadow-[var(--shadow)]';
 
-const FEATURED = [
-  { slug: 'iphone-17-pro-max', label: 'New Drop' },
-  { slug: 'galaxy-s26-ultra',  label: 'Best Seller' },
-  { slug: 'iphone-16-pro',     label: 'Popular' },
-  { slug: 'galaxy-s25-edge',   label: 'Limited' },
+const STYLE_DROPS = [
+  {
+    name: 'Clear Case',
+    subtitle: 'Barely-there protection that lets your phone shine through. Ultra-slim, crystal finish.',
+    imageUrl: '/Example 01.jpeg',
+    label: 'Bestseller',
+    href: '/products?style=Clear',
+  },
+  {
+    name: 'MagSafe Case',
+    subtitle: 'Built-in MagSafe magnets for seamless wireless charging and snap-on accessories.',
+    imageUrl: '/Example 0.3.png',
+    label: 'New Drop',
+    href: '/products?style=MagSafe',
+  },
+  {
+    name: 'Leather Case',
+    subtitle: 'Full-grain croc-embossed leather. Ages beautifully. Signature gold JDÉ monogram.',
+    imageUrl: '/Example 0.4.png',
+    label: 'Popular',
+    href: '/products?style=Leather',
+  },
+  {
+    name: 'Rugged Case',
+    subtitle: 'Military-grade drop protection wrapped in luxury. Style that survives everything.',
+    imageUrl: '/Example 0.5.png',
+    label: 'Limited',
+    href: '/products?style=Rugged',
+  },
 ];
 
 export default async function HomePage() {
   const currency = await getCurrentCurrency();
-  const products = await getProducts();
-  const bySlug = Object.fromEntries(products.map((p) => [p.slug, p]));
-
-  const drops = FEATURED.flatMap(({ slug, label }) => {
-    const p = bySlug[slug];
-    if (!p) return [];
-    const card = toProductCard(p, currency);
-    return [{ ...card, label }];
-  });
+  // keep products available for future use
+  try { await getProducts(); } catch { /* API unavailable */ }
 
   return (
     <main className="min-h-screen px-5 pb-[72px] max-[640px]:px-[14px] max-[640px]:pb-[52px]">
@@ -74,14 +92,28 @@ export default async function HomePage() {
       <section id="new-drops" className={`${maxW} pt-14`}>
         <div className="flex justify-between items-end gap-[18px] mb-[22px] max-[640px]:items-start max-[640px]:flex-col">
           <div>
-            <span className="uppercase tracking-[0.14em] text-[0.76rem] text-muted">New drops</span>
-            <h2 className="mt-[10px] mb-0 text-[clamp(2rem,5vw,3.2rem)] leading-[0.98] tracking-[-0.04em]">Fresh styles for your newest lineup</h2>
+            <span className="uppercase tracking-[0.14em] text-[0.76rem] text-muted">Our styles</span>
+            <h2 className="mt-[10px] mb-0 text-[clamp(2rem,5vw,3.2rem)] leading-[0.98] tracking-[-0.04em]">Four materials. One standard.</h2>
           </div>
           <a href="/products" className="uppercase tracking-[0.14em] text-[0.76rem] text-muted">View all</a>
         </div>
         <div className="grid grid-cols-4 gap-[18px] max-[1080px]:grid-cols-2 max-[640px]:grid-cols-1">
-          {drops.map((item) => (
-            <ProductTile key={item.slug ?? item.name} {...item} />
+          {STYLE_DROPS.map((item) => (
+            <article key={item.name} className="overflow-hidden rounded-[24px] border border-[rgba(31,23,34,0.12)] bg-[rgba(255,255,255,0.85)] [box-shadow:0_20px_50px_rgba(113,72,96,0.14)]">
+              <div className="relative aspect-[4/5] bg-[#f5eef2]">
+                <Image src={item.imageUrl} alt={item.name} fill className="object-contain" />
+                <span className="absolute top-3 left-3 inline-flex px-3 py-2 rounded-full bg-[rgba(255,255,255,0.78)] border border-[rgba(31,23,34,0.08)] text-[0.74rem] uppercase tracking-[0.12em]">
+                  {item.label}
+                </span>
+              </div>
+              <div className="p-[18px]">
+                <h3 className="m-0 mb-2 text-[1.06rem]">{item.name}</h3>
+                <p className="m-0 text-muted leading-[1.55] min-h-[48px]">{item.subtitle}</p>
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <Link href={item.href} className="text-muted text-[0.9rem] no-underline">View style →</Link>
+                </div>
+              </div>
+            </article>
           ))}
         </div>
       </section>

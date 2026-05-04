@@ -1,12 +1,15 @@
 import { Hono } from "hono";
 
 import { prisma } from "@case-couture/db";
-
+import { env } from "../config/env.js";
 import { seedProducts } from "../lib/seed-data.js";
 
 export const devRoutes = new Hono();
 
 devRoutes.post("/seed", async (c) => {
+  if (env.NODE_ENV === "production") {
+    return c.json({ error: "Not found" }, 404);
+  }
   // Clear in FK-safe order
   await prisma.inventoryItem.deleteMany();
   await prisma.productVariantPrice.deleteMany();

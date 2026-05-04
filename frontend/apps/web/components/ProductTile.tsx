@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 import type { ProductCardDto } from "@case-couture/types";
@@ -11,9 +12,9 @@ export function ProductTile({ name, subtitle, price, label, slug, imageUrl }: Pr
 
   return (
     <article className="overflow-hidden rounded-[24px] border border-[rgba(31,23,34,0.12)] bg-[rgba(255,255,255,0.85)] [box-shadow:0_20px_50px_rgba(113,72,96,0.14)]">
-      <div className="relative aspect-[4/5]">
+      <div className="relative aspect-[4/5] bg-[#f5eef2]">
         {imageUrl ? (
-          <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
+          <Image src={imageUrl} alt={name} fill className="object-contain" />
         ) : (
           <div
             className="w-full h-full"

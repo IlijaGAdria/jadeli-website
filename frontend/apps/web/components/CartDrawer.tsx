@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useCart } from './CartContext';
 import { useCurrency } from './CurrencyContext';
 import { formatAmount } from '../lib/currency';
@@ -15,7 +16,7 @@ function resolvePrice(prices: { currency: string; amount: number }[], currency: 
 }
 
 export function CartDrawer() {
-  const { items, isOpen, closeCart, removeItem } = useCart();
+  const { items, isOpen, closeCart, removeItem, decrementItem, addItem } = useCart();
   const { currency } = useCurrency();
 
   const total = items.reduce((sum, item) => {
@@ -78,7 +79,9 @@ export function CartDrawer() {
                 const itemPriceStr = itemAmount ? formatAmount(itemAmount, currency) : item.price;
                 return (
                 <div key={item.id} className="flex gap-[14px] items-start">
-                  <img src={item.imageSrc} alt={item.name} className="w-[70px] h-[88px] object-cover rounded-xl shrink-0" />
+                  <div className="relative shrink-0 rounded-xl overflow-hidden bg-[#f5eef2]" style={{ width: 70, height: 88 }}>
+                    <Image src={item.imageSrc} alt={item.name} fill className="object-contain" />
+                  </div>
                   <div className="flex-1 flex flex-col gap-1">
                     <p className="m-0 text-[0.9rem] font-semibold text-[#1f1722]">{item.name}</p>
                     <p className="m-0 text-[0.79rem] text-muted">{item.size}</p>
@@ -87,13 +90,32 @@ export function CartDrawer() {
                       {item.quantity > 1 && <span className="font-normal text-muted"> × {item.quantity}</span>}
                     </p>
                   </div>
-                  <button
-                    className="bg-transparent border-none cursor-pointer text-[0.8rem] text-muted px-[6px] py-1 rounded-md transition-colors hover:bg-[#fbe2ef] hover:text-[#1f1722] font-[inherit] shrink-0 mt-[2px]"
-                    onClick={() => removeItem(item.id)}
-                    aria-label={`Remove ${item.name}`}
-                  >
-                    ✕
-                  </button>
+                  <div className="flex flex-col items-center gap-[6px] shrink-0 mt-[2px]">
+                    <button
+                      className="bg-transparent border-none cursor-pointer text-[0.8rem] text-muted px-[6px] py-1 rounded-md transition-colors hover:bg-[#fbe2ef] hover:text-[#1f1722] font-[inherit]"
+                      onClick={() => removeItem(item.id)}
+                      aria-label={`Remove ${item.name}`}
+                    >
+                      ✕
+                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        className="w-6 h-6 flex items-center justify-center bg-transparent border border-[rgba(31,23,34,0.15)] rounded-full text-[0.85rem] text-[#1f1722] cursor-pointer transition-colors hover:bg-[#f5e8f0] font-[inherit] leading-none"
+                        onClick={() => decrementItem(item.id)}
+                        aria-label={`Decrease quantity of ${item.name}`}
+                      >
+                        −
+                      </button>
+                      <span className="text-[0.82rem] font-semibold text-[#1f1722] min-w-[16px] text-center">{item.quantity}</span>
+                      <button
+                        className="w-6 h-6 flex items-center justify-center bg-transparent border border-[rgba(31,23,34,0.15)] rounded-full text-[0.85rem] text-[#1f1722] cursor-pointer transition-colors hover:bg-[#f5e8f0] font-[inherit] leading-none"
+                        onClick={() => addItem({ variantId: item.variantId, name: item.name, price: item.price, prices: item.prices, size: item.size, imageSrc: item.imageSrc })}
+                        aria-label={`Increase quantity of ${item.name}`}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 );
               })}

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useCart } from './CartContext';
@@ -32,7 +33,7 @@ export function PhoneCaseCard({
   const [addedToCart, setAddedToCart] = useState(false);
   const cart = useCart();
 
-  const displayImage = selectedModel?.imageSrc ?? imageSrc;
+  const displayImage = imageSrc;
 
   function handleChooseModel() {
     setShowModels(true);
@@ -52,7 +53,7 @@ export function PhoneCaseCard({
       price,
       prices: selectedModel.prices ?? [],
       size: selectedModel.productName,
-      imageSrc: selectedModel.imageSrc,
+      imageSrc: imageSrc,
     });
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
@@ -63,17 +64,18 @@ export function PhoneCaseCard({
 
   return (
     <article className="group flex flex-col bg-white rounded-[24px] overflow-hidden [box-shadow:0_20px_50px_rgba(113,72,96,0.14)] transition-transform duration-200 ease-in-out hover:-translate-y-1" style={{willChange: 'transform'}}>
-      <div className="relative aspect-[3/4] overflow-hidden rounded-t-[24px]">
-        <img
+      <div className="group/photo relative aspect-[3/4] overflow-hidden rounded-t-[24px] bg-[#faf5f8]">
+        <Image
           src={displayImage}
           alt={name}
-          className="w-full h-full object-cover block transition-transform duration-[350ms] ease-in-out group-hover:scale-[1.04]"
+          fill
+          className="object-contain transition-transform duration-[350ms] ease-in-out group-hover/photo:scale-[1.04]"
         />
-        {/* Hover overlay — links to selected model or nothing */}
-        {selectedModel && (
+        {/* Hover overlay — always visible, links to selected model or first model */}
+        {models[0] && (
           <Link
-            href={`/products/${selectedModel.productSlug}`}
-            className="absolute inset-0 flex items-end justify-center pb-5 bg-[rgba(31,23,34,0.45)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            href={`/products/${(selectedModel ?? models[0]).productSlug}?style=${encodeURIComponent(name)}`}
+            className="absolute inset-0 flex items-end justify-center pb-5 bg-[rgba(31,23,34,0.45)] opacity-0 group-hover/photo:opacity-100 transition-opacity duration-300"
           >
             <span className="text-white text-[0.95rem] font-semibold tracking-[0.06em] uppercase border border-white rounded-full px-5 py-2 backdrop-blur-sm">
               View Details
@@ -89,7 +91,14 @@ export function PhoneCaseCard({
 
       <div className="p-[18px] flex flex-col gap-[6px] flex-1 rounded-b-[24px] overflow-visible">
         <h3 className="m-0 text-[1rem] font-semibold text-[#1f1722] tracking-[-0.01em]">{name}</h3>
-        <p className="m-0 text-[0.95rem] text-muted">{price}</p>
+        <div className="flex items-baseline justify-between gap-2">
+          <p className="m-0 text-[0.95rem] text-muted">{price}</p>
+          {models[0] && (
+            <Link href={`/products/${(selectedModel ?? models[0]).productSlug}?style=${encodeURIComponent(name)}`} className="text-[0.8rem] text-muted underline underline-offset-[3px] hover:text-[#1f1722] transition-colors whitespace-nowrap">
+              View details
+            </Link>
+          )}
+        </div>
 
         {selectedModel && !showModels && (
           <p className="m-0 text-[0.82rem] text-muted italic">{selectedModel.productName}</p>

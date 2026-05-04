@@ -1,0 +1,138 @@
+{
+  "Clear": [
+    {
+      "id": "c1",
+      "author": "Sofia M.",
+      "location": "Milan, Italy",
+      "rating": 5,
+      "date": "April 2026",
+      "body": "I was hesitant about a clear case but this is on another level. You can barely tell it's there — until someone notices the crystal detail and asks where you got it."
+    },
+    {
+      "id": "c2",
+      "author": "James K.",
+      "location": "London, UK",
+      "rating": 5,
+      "date": "March 2026",
+      "body": "The clarity hasn't yellowed at all after two months of daily use. Fits perfectly and the edges feel premium. Worth every penny."
+    },
+    {
+      "id": "c3",
+      "author": "Priya R.",
+      "location": "Dubai, UAE",
+      "rating": 4,
+      "date": "March 2026",
+      "body": "Slim, clean and elegant. The JDÉ logo adds just enough personality without being loud. My only wish is it came in a matte finish too."
+    },
+    {
+      "id": "c4",
+      "author": "Lena V.",
+      "location": "Paris, France",
+      "rating": 5,
+      "date": "February 2026",
+      "body": "Bought this as a gift and she immediately put it on. The packaging alone feels like a luxury purchase. The case itself is flawless."
+    }
+  ],
+  "MagSafe": [
+    {
+      "id": "m1",
+      "author": "Tobias H.",
+      "location": "Munich, Germany",
+      "rating": 5,
+      "date": "April 2026",
+      "body": "Finally a MagSafe case that doesn't look cheap. The snap is incredibly strong — snaps right onto my car mount and charger without any fuss."
+    },
+    {
+      "id": "m2",
+      "author": "Chloe B.",
+      "location": "New York, USA",
+      "rating": 5,
+      "date": "April 2026",
+      "body": "I've tried four MagSafe cases and this is the first one I'd describe as beautiful. The croc texture detail elevates the whole thing."
+    },
+    {
+      "id": "m3",
+      "author": "Rayan A.",
+      "location": "Riyadh, Saudi Arabia",
+      "rating": 4,
+      "date": "March 2026",
+      "body": "Strong magnets, great feel in the hand and looks great. Shipping was fast too. Would definitely order the leather one next."
+    },
+    {
+      "id": "m4",
+      "author": "Nina O.",
+      "location": "Stockholm, Sweden",
+      "rating": 5,
+      "date": "February 2026",
+      "body": "The alignment every time I put it on my MagSafe pad is satisfying. And it looks stunning on my desk. People always comment on it."
+    }
+  ],
+  "Leather": [
+    {
+      "id": "l1",
+      "author": "Marco D.",
+      "location": "Rome, Italy",
+      "rating": 5,
+      "date": "April 2026",
+      "body": "The leather is exceptional — soft yet structured. After a few weeks it's developed a beautiful patina that makes it feel truly personal. Nothing else comes close."
+    },
+    {
+      "id": "l2",
+      "author": "Amélie F.",
+      "location": "Lyon, France",
+      "rating": 5,
+      "date": "March 2026",
+      "body": "I treat my phone like an accessory and this case completes the look entirely. The croc embossing is subtle and incredibly refined."
+    },
+    {
+      "id": "l3",
+      "author": "William C.",
+      "location": "Sydney, Australia",
+      "rating": 5,
+      "date": "March 2026",
+      "body": "The gold JDÉ logo sits perfectly flush — no raised edges, no peeling. Six weeks in and it still looks brand new. Outstanding quality."
+    },
+    {
+      "id": "l4",
+      "author": "Yuki T.",
+      "location": "Tokyo, Japan",
+      "rating": 4,
+      "date": "February 2026",
+      "body": "Beautiful craftsmanship and a wonderful smell when you first open it. Fits snugly without being difficult to put on. A genuinely luxurious product."
+    }
+  ],
+  "Rugged": [
+    {
+      "id": "r1",
+      "author": "Ava P.",
+      "location": "Vancouver, Canada",
+      "rating": 5,
+      "date": "April 2026",
+      "body": "I dropped my phone twice last week — once on concrete — and there's not a scratch on the case. Looks incredible while being practically indestructible."
+    },
+    {
+      "id": "r2",
+      "author": "Kwame A.",
+      "location": "Accra, Ghana",
+      "rating": 5,
+      "date": "April 2026",
+      "body": "Never thought I'd describe a rugged case as stylish, but here we are. The JDÉ branding keeps it elevated and the grip is superb."
+    },
+    {
+      "id": "r3",
+      "author": "Isabelle N.",
+      "location": "Brussels, Belgium",
+      "rating": 4,
+      "date": "March 2026",
+      "body": "Slightly thicker than my previous case but the added confidence is worth it. Took it hiking and it handled mud, rain and rocks without issue."
+    },
+    {
+      "id": "r4",
+      "author": "Diego S.",
+      "location": "Buenos Aires, Argentina",
+      "rating": 5,
+      "date": "February 2026",
+      "body": "The raised edges protect the screen perfectly and the texture actually improves your grip. This is what a premium rugged case should look like."
+    }
+  ]
+}
